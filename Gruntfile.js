@@ -1,8 +1,19 @@
 module.exports = function(grunt){
 	grunt.initConfig({
+		concurrent:{
+			tasks:['watch','nodemon'],
+			logCuncurrentOutput:true
+		},
+		watch:{
+			server:{
+				files:['Gruntfile.js', 'config/**', 'lib/**', 'controllers/**'],
+				tasks:['nodemon']
+			}
+		},
 		nodemon:{
 			local:{
-				script: 'server.js'
+				script: 'bin/www',
+				ignore:['node_modules/**']
 			}
 		}
 	});
