@@ -30,6 +30,6 @@ exports.logout = function(req, res, next){
  * @description Verify that a token is valid and return user data
  * @params {String} email - Email of user
  */
-exports.logout = function(req, res, next){
+exports.verify = function(req, res, next){
 
 };
