@@ -1,7 +1,7 @@
 var express = require('express');
 var indexCtrls = require('../controllers/index');
 var authCtrls = require('../controllers/auth');
-var usersCtrls = require('../controllers/users');
+var userCtrls = require('../controllers/users');
 
 
 module.exports =  {
@@ -35,7 +35,28 @@ module.exports =  {
 	users:[
 		{
 			type:'GET',
-			endpoint: '/users'
+			endpoint: '/users',
+			controller:userCtrls.get
+		},
+		{
+			type:'GET',
+			endpoint: '/users/:id',
+			controller:userCtrls.get
+		},
+		{
+			type:'POST',
+			endpoint: '/users',
+			controller:userCtrls.add
+		},
+		{
+			type:'PUT',
+			endpoint: '/users',
+			controller:userCtrls.update
+		},
+		{
+			type:'DELETE',
+			endpoint: '/users/:id',
+			controller:userCtrls['delete']
 		}
 	]
 };
