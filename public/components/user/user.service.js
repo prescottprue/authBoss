@@ -24,7 +24,7 @@ angular.module('authBoss')
 			var isList = true;
 			if(userId){
 				endpointUrl = endpointUrl + "/" + userId;
-				isList = false
+				isList = false;
 			}
 			$http.get(endpointUrl)
 			.then(function (apiRes){
@@ -39,6 +39,25 @@ angular.module('authBoss')
 			.catch(function (errRes){
 				//TODO: Handle different error response codes
 				console.error('Error loading user data', errRes.data);
+				deferred.reject(errRes.data);
+			});
+			return deferred.promise;
+		},
+		del:function(userId){
+			var deferred = $q.defer();
+			// console.log('Loading user with ID:', userId);
+			if(userId){
+				endpointUrl =  "users/" + userId;
+			}
+			$http.delete(endpointUrl)
+			.then(function (apiRes){
+				console.log('user succesfully deleted:', apiRes.data);
+				users = apiRes.data;
+				deferred.resolve(apiRes.data);
+			})
+			.catch(function (errRes){
+				//TODO: Handle different error response codes
+				console.error('Error deleting user', errRes.data);
 				deferred.reject(errRes.data);
 			});
 			return deferred.promise;

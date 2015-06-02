@@ -30,13 +30,16 @@ angular.module('authBoss.auth')
 })
 //Intercept $http requests and responses
 .factory('AuthInterceptor', function ($rootScope, $q, AUTH_EVENTS, Session) {
+  function isHTTP(url){
+    return url.search("http://") != -1
+  }
   return {
     //Set auth header on request if it is available
     request: function (config) {
     	//Only if session exists or it is an outward request (not a template request)
-      if (Session.exists() && config.url.splice("/")[0] == "http:") {
+      if (Session.exists() && isHTTP(config.url)) {
         config.headers.Authorization = "Bearer " + Session.token();
-        config.cache = true;
+        // config.cache = true;
         console.log("token["+Session.token()+"], config.headers: ", config.headers);
       }
       return config || $q.when(config);

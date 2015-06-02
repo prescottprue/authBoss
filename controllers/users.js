@@ -1,6 +1,7 @@
 var User = require('../models/user').User;
 var mongoose = require('mongoose');
 var url = require('url');
+var _ = require('underscore');
 /**
  * @description User controller functions
  */
@@ -10,19 +11,24 @@ var url = require('url');
  * @params {String} password - Password of user
  */
 exports.get = function(req, res, next){
-	var urlParams = url.parse(req.url, true).query;
-	
-	if(urlParams.id){ //Get data for a specific user
-		var query = User.findOne({});
-	} else {
-		var query = User.find({});
+	var isList = true;
+	var query = User.find({});
+	if(req.params.id){ //Get data for a specific user
+		console.log('user request:', req.params.id);
+		query = User.findById(req.params.id);
+		isList = false;
 	}
+
 	query.exec(function (err, result){
 		if(err) { return next(err);}
 		if(!result){
 			return next (new Error('User could not be found'));
 		}
-		res.send(result);
+		var resData = result;
+		if(!isList){
+			resData = result.strip();
+		}
+		res.send(resData);
 	});
 };
 
@@ -64,7 +70,7 @@ exports.add = function(req, res, next){
  * @params {String} title - Title of user
  */
 exports.update = function(req, res, next){
-	User.update({id:req.id}, req.body, {upsert:true}, function (err, numberAffected, result) {
+	User.update({_id:req.id}, req.body, {upsert:true}, function (err, numberAffected, result) {
 		if (err) { return next(err); }
 		if (!result) {
 
@@ -79,7 +85,7 @@ exports.update = function(req, res, next){
  */
 exports.delete = function(req, res, next){
 	var urlParams = url.parse(req.url, true).query;
-	var query = User.findOneAndRemove({'id':urlParams.id}); // find and delete using id field
+	var query = User.findOneAndRemove({'_id':req.params.id}); // find and delete using id field
 	query.exec(function (err, result){
 		if (err) { return next(err); }
 		if (!result) {

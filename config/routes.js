@@ -35,6 +35,11 @@ module.exports =  {
 	users:[
 		{
 			type:'GET',
+			endpoint: '/user',
+			controller:authCtrls.verify
+		},
+		{
+			type:'GET',
 			endpoint: '/users',
 			controller:userCtrls.get
 		},

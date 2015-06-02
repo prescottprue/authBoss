@@ -9,19 +9,18 @@
             <th>Name</th>
             <th>Email</th>
             <th>Role</th>
-            <th auth-roles="admin">Delete</th>
+            <th>Delete</th>
           </tr>
         </thead>
         <tbody>
-          <tr ng-repeat="user in users"  ui-sref="user({id:user.id})">
+          <tr ng-repeat="user in users"  ui-sref="user({id:user._id})">
             <td data-title="Name">{{user._id}}</td>
             <td data-title="Name">{{user.name}}</td>
             <td data-title="Email">{{user.email}}</td>
             <td data-title="Role">{{user.role || "User"}}</td>
-            <td data-title="Delete" auth-roles="admin">      
-              <md-button href="http://google.com"
-                 target="_blank"
-                 aria-label="Google.com"
+            <td data-title="Delete">      
+              <md-button ng-click="delete($index)"
+                 aria-label="Delete"
                  class="md-icon-button" >
                   <i class="fa fa-trash"></i>
               </md-button>

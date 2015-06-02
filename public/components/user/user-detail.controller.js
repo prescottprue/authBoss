@@ -8,6 +8,7 @@ angular.module('authBoss')
 
 		if($stateParams.id){
 			$scope.data.loading = true;
+			console.log('userId:', $stateParams.id)
 			userService.get($stateParams.id)
 			.then(function (userData){
 				console.log('User Detail Ctrl: user data loaded:', userData);

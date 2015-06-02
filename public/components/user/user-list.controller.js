@@ -9,10 +9,21 @@ angular.module('authBoss')
 			$scope.data.loading = false;
 			console.log('users list loaded:', usersList);
 			$scope.users = usersList;
-		})
-		.catch(function (err){
+		}, function (err){
 			console.error('Error loading users', err);
 			$scope.data.loading = false;
 			$scope.data.error = err;
-		})
+		});
+		$scope.delete = function(ind){
+			$scope.data.loading = true;
+			var userId = $scope.users[ind]._id;
+			console.log('calling delete with id:', userId);
+			userService.delete(userId).then(function(response){
+				console.log('user deleted successfully');
+			}, function(err){
+				console.error('Error loading users', err);
+				$scope.data.loading = false;
+				$scope.data.error = err;
+			});
+		};
 }])

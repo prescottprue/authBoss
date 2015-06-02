@@ -32,7 +32,7 @@ angular.module('authBoss', ['ui.router', 'ngMaterial', 'ngStorage', 'angular-jwt
     .state('user', {
       parent:'nav',
       url:'/user/:id',
-      authorizedRoles:[USER_ROLES.admin, USER_ROLES.editor, USER_ROLES.user],
+      // authorizedRoles:[USER_ROLES.admin, USER_ROLES.editor, USER_ROLES.user],
       templateUrl:'components/user/user-detail.html',
       controller:'UserDetailController'
     })

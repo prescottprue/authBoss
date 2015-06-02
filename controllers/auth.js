@@ -1,6 +1,11 @@
 var User = require('../models/user').User;
 var mongoose = require('mongoose');
 var url = require('url');
+var jwt = require('jsonwebtoken');
+var _ = require('underscore');
+var bcrypt = require('bcrypt');
+
+var config = require('../config/default').config;
 /**
  * @description Authentication controller functions
  */
@@ -10,19 +15,39 @@ var url = require('url');
  * @params {String} password - Password of user
  */
 exports.login = function(req, res, next){
-	var query = User.findOne({"email":req.email});
-	//TODO:Check encrypted password against db
+	console.log('Login request with :', req.body);
+
+	var query = User.findOne({email:req.body.email});
 	//TODO:Create a new session
-	//TODO:Encode a JWT with session + user info
 	query.exec(function (err, result){
-		if(err) { return next(err);}
+		if(err) { console.error('login error:', err);
+			return next(err);}
 		if(!result){
+			console.error('user not found');
 			return next (new Error('User could not be found'));
 		}
-		res.send(result);
+		//Check password against db
+		console.log('user found:', result);
+		bcrypt.compare(req.body.password, result.password, function(err, passwordsMatch){
+			console.log("compare returned:", passwordsMatch);
+			if(err){return next(err);}
+			if(!passwordsMatch){
+				return next (new Error('Invalid authentication credentials'));
+			}
+			//Encode a JWT withuser info
+			var userData = result.strip();
+			//TODO: Add session info to token
+			var token = jwt.sign(userData, config.jwtSecret, {expiresInMinutes:10080});//Expire in 7 days
+			res.send(token);
+		});
 	});
 };
+// start session and create token with userData/session info
+// function startSession(userData){
 
+// 	var token = jwt.sign(userData, config.jwtSecret, {expiresInMinutes:10080});//Expire in 7 days
+
+// }
 /** Signup Ctrl
  * @description Allow new user to signup
  * @params {String} name - Name of new user
@@ -42,23 +67,31 @@ exports.signup = function(req, res, next){
 			// TODO: Respond with a specific error code
 			return next(new Error('User with this information already exists.'));
 		}
-		console.log('user does not already exist');
-		//TODO: Build object from request instead of using it
 		//user does not already exist
-		var user = new User(req.body);
-		user.save(function (err, result) {
-			if (err) { 
-				console.error('error creating user:', err);
-				return next(err); }
-			if (!result) {
-				console.error('User cant be created');
-				return next(new Error('user could not be added.'));
-			}
-			console.log('new user returning:', result);
-			res.json(result);
+		//Build user data from request
+		var userData = _.pick(req.body, ["_id", "email", "name", "role", "title", "createdAt"]);
+		//Encrypt password
+		bcrypt.genSalt(10, function(err, salt) {
+		  bcrypt.hash(req.body.password, salt, function(err, hash) {
+				//Add hash to userData
+				userData.password = hash;
+				var user = new User(userData);
+				user.save(function (err, result) {
+					if (err) { 
+						console.error('error creating user:', err);
+						return next(err); }
+					if (!result) {
+						return next(new Error('user could not be added.'));
+					}
+					res.json(result);
+				});
+			});
 		});
 	});
 };
+// function createUser(){
+
+// }
 /** Logout Ctrl
  * @description Log a current user out and invalidate token
  * @params {String} email - Email of user
