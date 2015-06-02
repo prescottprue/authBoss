@@ -9,19 +9,17 @@ var assets = require('./assets');
  * @return {String}
  */
 app.locals.scriptTags = function (name) {
+	// console.log('locals called');
+	// console.log("env:", app.get('config').env);
+	// if (app.get('config').env === 'localenv') {
 		var scriptTags = assets[name].map(function (url) {
-			return '<script src="/' + url + '"></script>';
+			return '<script src="' + url + '"></script>';
 		});
 		return scriptTags.join("\n");
-	if (app.get('config').env === 'localenv') {
-		var scriptTags = assets[name].map(function (url) {
-			return '<script src="/' + url + '"></script>';
-		});
-		return scriptTags.join("\n");
-	} else {
-		var path = 'public/' + name + '.js';
-		return '<script src="' + path + '"></script>';
-	}
+// 	} else {
+// 		var path = 'public/' + name + '.js';
+// 		return '<script src="' + path + '"></script>';
+// 	}
 };
 
 app.locals.cssTag = function (name) {
