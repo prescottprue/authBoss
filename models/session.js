@@ -5,7 +5,7 @@ var SessionSchema = new mongoose.Schema({
 	userId:{type: mongoose.Schema.Types.ObjectId},
 	active:{type: Boolean, default:true},
 	createdAt: { type: Date, default: Date.now, index: true},
-	endedAt: { type: Date, default: Date.now, index: true},
+	endedAt: { type: Date, index: true},
 	updatedAt: { type: Date, default: Date.now, index: true}
 });
 
@@ -19,6 +19,6 @@ db.authBoss.model('Session', SessionSchema);
  * Make model accessible from controllers
  */
 var Session = db.authBoss.model('Session');
-User.collectionName = SessionSchema.get('collection');
+Session.collectionName = SessionSchema.get('collection');
 
 exports.Session = db.authBoss.model('Session');

@@ -6,6 +6,7 @@ var _ = require('underscore');
 var bcrypt = require('bcrypt');
 
 var config = require('../config/default').config;
+
 /**
  * @description Authentication controller functions
  */
@@ -35,10 +36,10 @@ exports.login = function(req, res, next){
 				return next (new Error('Invalid authentication credentials'));
 			}
 			//Encode a JWT withuser info
-			var userData = result.strip();
+			
 			//TODO: Add session info to token
-			var token = jwt.sign(userData, config.jwtSecret, {expiresInMinutes:10080});//Expire in 7 days
-			res.send(token);
+			var token = jwt.sign(result.tokenData(), config.jwtSecret);
+			res.send({token:token, user:result.strip()});
 		});
 	});
 };
@@ -89,16 +90,17 @@ exports.signup = function(req, res, next){
 		});
 	});
 };
-// function createUser(){
 
-// }
 /** Logout Ctrl
  * @description Log a current user out and invalidate token
  * @params {String} email - Email of user
  */
 exports.logout = function(req, res, next){
 	//TODO:Invalidate token
-	//TODO:Destroy session
+	var user = new User(req.user);
+	user.endSession().then(function(){
+		res.send({status:200});
+	});
 };
 
 /** Verify Ctrl
@@ -106,24 +108,18 @@ exports.logout = function(req, res, next){
  * @params {String} email - Email of user
  */
 exports.verify = function(req, res, next){
-	//TODO:Verify Token
-	//TODO:Get user based on token data
 	//TODO:Return user info
-	var query = User.findOne({"email":req.body.email}); // find using email field
-	query.exec(function (qErr, qResult){
-		if (qErr) { return next(qErr); }
-		if(qResult){ //Matching user already exists
+	console.log('verify request:', req.user);
+	var query = User.findById(req.user.id);
+	query.exec(function (err, result){
+		console.log('verify returned:', result, err);
+		if (err) { return next(err); }
+		if(!result){ //Matching user already exists
 			// TODO: Respond with a specific error code
-			return next(new Error('User with this information already exists.'));
+
+			return next(new Error('User with this information does not exist.'));
 		}
-		//user does not already exist
-		var user = new User(req.body);
-		User.save(function (err, result) {
-			if (err) { return next(err); }
-			if (!result) {
-				return next(new Error('user could not be added.'));
-			}
-			res.json(result);
-		});
+
+		res.json(result);
 	});
 };

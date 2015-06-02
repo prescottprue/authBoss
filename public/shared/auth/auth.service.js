@@ -69,24 +69,19 @@ angular.module('authBoss.auth')
 	      password: loginData.password
 	    })
 	    .then(function (successRes){
-	    	Session.create(successRes.data);
-	    	self.getCurrentUser().then(function(userData){
-	    		$rootScope.$broadcast(AUTH_EVENTS.loginSuccess);
-	    		deferred.resolve($rootScope.currentUser);
-	    	}, function(err){
-	    		console.error('Error getting user data', err);
-	    		$rootScope.$broadcast(AUTH_EVENTS.loginFailed);
-	    		deferred.reject(err);
-	    	});
-	    	//TODO: Return user data
+	    	console.log('login response:', successRes);
+	    	Session.create(successRes.data.token);
+	    	$rootScope.currentUser = successRes.data.user;
+	    	$rootScope.$broadcast(AUTH_EVENTS.loginSuccess);
+	    	deferred.resolve($rootScope.currentUser);
 	    })
-	    .catch(function (sailsResponse) {
-	      console.error('Error logging in:', sailsResponse);
+	    .catch(function (errRes) {
+	      console.error('Error logging in:', errRes);
 	    	$rootScope.$broadcast(AUTH_EVENTS.loginFailed);
-	      if (sailsResponse.status === 209) {
-    			console.error('invalid email/password combo', sailsResponse);
+	      if (errRes.status === 209) {
+    			console.error('invalid email/password combo', errRes);
       	}
-	      deferred.reject(sailsResponse.data);
+	      deferred.reject(errRes.data);
 	    });
 	    return deferred.promise;
 		},

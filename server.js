@@ -5,6 +5,8 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var _ = require('underscore');
+var jwt = require('express-jwt');
+var config = require('./config/default').config;
 
 
 var routes = require('./config/routes');
@@ -22,10 +24,14 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(jwt({secret: config.jwtSecret}).unless({path:['/', '/login', '/signup']}));
+app.use(function (err, req, res, next) {
+    console.log(err.message, req.originalUrl);
+});
 //Setup routes based on config
 routeBuilder(routes);
 // app.use('/', routes);
-
+//Protect all routes by requiring Authorization header
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   var err = new Error('Not Found');

@@ -31,7 +31,7 @@ angular.module('authBoss.auth')
 //Intercept $http requests and responses
 .factory('AuthInterceptor', function ($rootScope, $q, AUTH_EVENTS, Session) {
   function isHTTP(url){
-    return url.search("http://") != -1
+    return url.search(".html") == -1
   }
   return {
     //Set auth header on request if it is available
