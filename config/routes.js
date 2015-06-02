@@ -55,7 +55,7 @@ module.exports =  {
 		},
 		{
 			type:'PUT',
-			endpoint: '/users',
+			endpoint: '/user/:id',
 			controller:userCtrls.update
 		},
 		{

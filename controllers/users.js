@@ -14,11 +14,10 @@ exports.get = function(req, res, next){
 	var isList = true;
 	var query = User.find({});
 	if(req.params.id){ //Get data for a specific user
-		console.log('user request:', req.params.id);
+		console.log('user request with id:', req.params.id);
 		query = User.findById(req.params.id);
 		isList = false;
 	}
-
 	query.exec(function (err, result){
 		if(err) { return next(err);}
 		if(!result){
@@ -70,14 +69,18 @@ exports.add = function(req, res, next){
  * @params {String} title - Title of user
  */
 exports.update = function(req, res, next){
-	User.update({_id:req.id}, req.body, {upsert:true}, function (err, numberAffected, result) {
-		if (err) { return next(err); }
-		if (!result) {
-
-			return next(new Error('user could not be added.'));
-		}
-		res.json(result);
-	});
+	if(req.params.id){
+		User.update({_id:req.params.id}, req.body, {upsert:true}, function (err, numberAffected, result) {
+			if (err) { return next(err); }
+			// if (!result) {
+			// 	return next(new Error('user could not be added.'));
+			// }
+			//TODO: respond with updated data instead of passing through req.body
+			res.json(req.body);
+		});
+	} else {
+		res.status(400).send({message:'User id required'});
+	}
 };
 /** Delete Ctrl
  * @description Delete a user
