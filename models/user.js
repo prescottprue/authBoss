@@ -1,8 +1,10 @@
 var db = require('./../lib/db');
 var mongoose = require('mongoose');
+//Schema Object
+//collection name
+//model name
 
 var UserSchema = new mongoose.Schema({
-	_id: {type: mongoose.Schema.Types.ObjectId, index:true},
 	name:{type: String, default:''},
 	email:{type: String, default:''},
 	title:{type: String, default:''},
@@ -11,7 +13,9 @@ var UserSchema = new mongoose.Schema({
 	createdAt: { type: Date, default: Date.now, index: true},
 	updatedAt: { type: Date, default: Date.now, index: true}
 });
-
+/*
+ * Set collection name to 'user'
+ */
 UserSchema.set('collection', 'user');
 /*
  * Construct `User` model from `UserSchema`

@@ -30,7 +30,7 @@ angular.module('authBoss')
 	$scope.logout = function(){
 		AuthService.logout().then(function(){
 			console.log('logout successful');
-      $scope.showToast('Successfully Logged Out');
+      // $scope.showToast('Successfully Logged Out');
 			//TODO: Refresh page after logout
 			$state.go('home');
 		}, function(err){
@@ -39,10 +39,10 @@ angular.module('authBoss')
 	};
 	$scope.signup = function(){
 		AuthService.signup($scope.signupForm).then(function(){
-			console.log('logout successful');
+			console.log('Signup successful');
 			//TODO: Refresh page after logout
-      $scope.showToast('Successfully signed up');
-			$state.go('home');
+      // $scope.showToast('Successfully signed up');
+			$state.go('users');
 		}, function(err){
 			console.error('error siging up:', err);
 		});

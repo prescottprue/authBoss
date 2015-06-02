@@ -2,7 +2,6 @@ var db = require('./../lib/db');
 var mongoose = require('mongoose');
 
 var SessionSchema = new mongoose.Schema({
-	_id: {type: mongoose.Schema.Types.ObjectId, index:true},
 	userId:{type: mongoose.Schema.Types.ObjectId},
 	active:{type: Boolean, default:true},
 	createdAt: { type: Date, default: Date.now, index: true},
