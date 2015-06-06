@@ -1,6 +1,6 @@
 module.exports = {
 	vendor:[
-		'/lib/angular/angular.min.js',
+		'/lib/angular/angular.js',
 		'/lib/angular-animate/angular-animate.min.js',
 		'/lib/angular-aria/angular-aria.min.js',
 		'/lib/ui-router/release/angular-ui-router.min.js',
@@ -19,6 +19,9 @@ module.exports = {
 		'/components/user/user.service.js',
 		'/components/user/user-list.controller.js',
 		'/components/user/user-detail.controller.js',
+		'/components/application/application.service.js',
+		'/components/application/application-list.controller.js',
+		'/components/application/application-detail.controller.js',
 		'/components/account/account.controller.js'
 	]
 }

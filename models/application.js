@@ -1,0 +1,23 @@
+var db = require('./../lib/db');
+var mongoose = require('mongoose');
+
+var ApplicationSchema = new mongoose.Schema({
+	owner:{type: mongoose.Schema.Types.ObjectId, ref:'User'},
+	name:{type:String, default:'', unique:true, index:true},
+	createdAt: { type: Date, default: Date.now},
+	updatedAt: { type: Date, default: Date.now}
+});
+
+ApplicationSchema.set('collection', 'applications');
+/*
+ * Construct `User` model from `UserSchema`
+ */
+db.authBoss.model('Application', ApplicationSchema);
+
+/*
+ * Make model accessible from controllers
+ */
+var Application = db.authBoss.model('Application');
+Application.collectionName = ApplicationSchema.get('collection');
+
+exports.Application = db.authBoss.model('Application');

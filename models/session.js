@@ -9,7 +9,7 @@ var SessionSchema = new mongoose.Schema({
 	updatedAt: { type: Date, default: Date.now, index: true}
 });
 
-SessionSchema.set('collection', 'session');
+SessionSchema.set('collection', 'sessions');
 /*
  * Construct `User` model from `UserSchema`
  */

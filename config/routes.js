@@ -2,6 +2,8 @@ var express = require('express');
 var indexCtrls = require('../controllers/index');
 var authCtrls = require('../controllers/auth');
 var userCtrls = require('../controllers/users');
+var appCtrls = require('../controllers/applications');
+
 
 
 module.exports =  {
@@ -62,6 +64,34 @@ module.exports =  {
 			type:'DELETE',
 			endpoint: '/users/:id',
 			controller:userCtrls['delete']
+		}
+	],
+	applications:[
+
+		{
+			type:'GET',
+			endpoint: '/apps',
+			controller:appCtrls.get
+		},
+		{
+			type:'GET',
+			endpoint: '/apps/:id',
+			controller:appCtrls.get
+		},
+		{
+			type:'POST',
+			endpoint: '/apps',
+			controller:appCtrls.add
+		},
+		{
+			type:'PUT',
+			endpoint: '/apps/:id',
+			controller:appCtrls.update
+		},
+		{
+			type:'DELETE',
+			endpoint: '/apps/:id',
+			controller:appCtrls['delete']
 		}
 	]
 };

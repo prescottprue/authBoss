@@ -1,4 +1,6 @@
 var User = require('../models/user').User;
+var Application = require('../models/application').Application;
+
 var mongoose = require('mongoose');
 var url = require('url');
 var _ = require('underscore');
@@ -12,7 +14,7 @@ var _ = require('underscore');
  */
 exports.get = function(req, res, next){
 	var isList = true;
-	var query = User.find({});
+	var query = Application.find({}).populate({path:'owner', select:'name title email'});
 	if(req.params.id){ //Get data for a specific user
 		console.log('user request with id:', req.params.id);
 		query = User.findById(req.params.id);
@@ -42,7 +44,7 @@ exports.get = function(req, res, next){
  */
 exports.add = function(req, res, next){
 	//Query for existing user with same _id
-	var query = User.findOne({"email":req.email}); // find using email field
+	var query = Application.findOne({"name":req.name}); // find using email field
 	query.exec(function (qErr, qResult){
 		if (qErr) { return next(qErr); }
 		if(qResult){ //Matching user already exists
@@ -50,7 +52,7 @@ exports.add = function(req, res, next){
 		}
 		//user does not already exist
 		var user = new User(req.body);
-		User.save(function (err, result) {
+		Application.save(function (err, result) {
 			if (err) { return next(err); }
 			if (!result) {
 
@@ -70,7 +72,7 @@ exports.add = function(req, res, next){
  */
 exports.update = function(req, res, next){
 	if(req.params.id){
-		User.update({_id:req.params.id}, req.body, {upsert:true}, function (err, numberAffected, result) {
+		Application.update({_id:req.params.id}, req.body, {upsert:true}, function (err, numberAffected, result) {
 			if (err) { return next(err); }
 			// if (!result) {
 			// 	return next(new Error('user could not be added.'));
@@ -79,7 +81,7 @@ exports.update = function(req, res, next){
 			res.json(req.body);
 		});
 	} else {
-		res.status(400).send({message:'User id required'});
+		res.status(400).send({message:'Application id required'});
 	}
 };
 /** Delete Ctrl
@@ -88,11 +90,11 @@ exports.update = function(req, res, next){
  */
 exports.delete = function(req, res, next){
 	var urlParams = url.parse(req.url, true).query;
-	var query = User.findOneAndRemove({'_id':req.params.id}); // find and delete using id field
+	var query = Application.findOneAndRemove({'_id':req.params.id}); // find and delete using id field
 	query.exec(function (err, result){
 		if (err) { return next(err); }
 		if (!result) {
-			return next(new Error('User could not be deleted.'));
+			return next(new Error('Application could not be deleted.'));
 		}
 		res.json(result);
 	});

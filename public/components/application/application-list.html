@@ -1,0 +1,31 @@
+  <md-content>
+    <div id="demo">
+    <div class="table-responsive-vertical shadow-z-1">
+    <!-- Table starts here -->
+      <table id="table" class="table table-hover table-mc-light-blue">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Owner</th>
+            <th>Delete</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="app in applications"  ui-sref="app({name:app.name})">
+            <td data-title="ID">{{app._id}}</td>
+            <td data-title="Name">{{app.name}}</td>
+            <td data-title="Owner">{{app.owner.email}}</td>
+            <td data-title="Delete">      
+              <md-button ng-click="delete($index)"
+                 aria-label="Delete"
+                 class="md-icon-button" >
+                  <i class="fa fa-trash"></i>
+              </md-button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    </div>
+  </md-content>

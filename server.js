@@ -27,14 +27,19 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 var allowedPaths = ['/', '/login', '/signup'];
+// var assets = require('./assets');
+// allowedPaths = _.union(allowedPaths, config.vendor, config.app);
+
+//Protect all routes by requiring Authorization header
 app.use(jwt({secret: config.jwtSecret}).unless({path:allowedPaths}));
-app.use(function (err, req, res, next) {
-    console.log(err.message, req.originalUrl);
-});
+
 //Setup routes based on config
 routeBuilder(routes);
 // app.use('/', routes);
-//Protect all routes by requiring Authorization header
+//Log Errors before they are handled
+app.use(function (err, req, res, next) {
+  console.log(err.message, req.originalUrl);
+});
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   var err = new Error('Not Found');

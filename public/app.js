@@ -1,11 +1,11 @@
 angular.module('authBoss', ['ui.router', 'ngMaterial', 'ngStorage', 'angular-jwt', 'authBoss.auth'])
 .config(function($stateProvider, $urlRouterProvider, $mdThemingProvider, USER_ROLES) {
   $stateProvider
-    .state('app', {
+    .state('main', {
       templateUrl:'layout/layout-main.html'
     })
     .state('nav', {
-      parent:'app',
+      parent:'main',
       abstract:true,
       views:{
         'topnav':{
@@ -35,6 +35,20 @@ angular.module('authBoss', ['ui.router', 'ngMaterial', 'ngStorage', 'angular-jwt
       // authorizedRoles:[USER_ROLES.admin, USER_ROLES.editor, USER_ROLES.user],
       templateUrl:'components/user/user-detail.html',
       controller:'UserDetailController'
+    })
+    .state('apps', {
+      parent:'nav',
+      url:'/apps',
+      authorizedRoles:[USER_ROLES.admin, USER_ROLES.editor, USER_ROLES.user],
+      templateUrl:'components/application/application-list.html',
+      controller:'ApplicationListController'
+    })
+    .state('app', {
+      parent:'nav',
+      url:'/apps/:name',
+      authorizedRoles:[USER_ROLES.admin, USER_ROLES.editor, USER_ROLES.user],
+      templateUrl:'components/application/application-detail.html',
+      controller:'ApplicationDetailController'
     })
     .state('signup', {
       parent:'nav',
