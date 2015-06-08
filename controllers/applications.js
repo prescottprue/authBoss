@@ -1,13 +1,12 @@
 var User = require('../models/user').User;
 var Application = require('../models/application').Application;
-
 var mongoose = require('mongoose');
 var url = require('url');
 var _ = require('underscore');
 /**
- * @description User controller functions
+ * @description Application controller functions
  */
-/** User Ctrl
+/** Get Ctrl
  * @description Log an existing user in
  * @params {String} email - Email of user
  * @params {String} password - Password of user
@@ -48,14 +47,13 @@ exports.add = function(req, res, next){
 	query.exec(function (qErr, qResult){
 		if (qErr) { return next(qErr); }
 		if(qResult){ //Matching user already exists
-			return next(new Error('User with this information already exists.'));
+			return next(new Error('Application with this information already exists.'));
 		}
 		//user does not already exist
 		var user = new User(req.body);
 		Application.save(function (err, result) {
 			if (err) { return next(err); }
 			if (!result) {
-
 				return next(new Error('user could not be added.'));
 			}
 			res.json(result);

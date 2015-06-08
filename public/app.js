@@ -1,4 +1,9 @@
 angular.module('authBoss', ['ui.router', 'ngMaterial', 'ngStorage', 'angular-jwt', 'authBoss.auth'])
+.run(function(AuthService){
+  AuthService.getCurrentUser(function(){
+    console.log('current user set');
+  });
+})
 .config(function($stateProvider, $urlRouterProvider, $mdThemingProvider, USER_ROLES) {
   $stateProvider
     .state('main', {
@@ -65,7 +70,7 @@ angular.module('authBoss', ['ui.router', 'ngMaterial', 'ngStorage', 'angular-jwt
   // if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise('/');
   $mdThemingProvider.theme('default')
-    .primaryPalette('red')
+    .primaryPalette('blue')
     .accentPalette('grey')
   $mdThemingProvider.theme('docs-dark', 'default').dark();
 });

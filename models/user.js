@@ -2,6 +2,8 @@ var db = require('./../lib/db');
 var mongoose = require('mongoose');
 var _ = require('underscore');
 var sessionCtrls = require('../controllers/session');
+var Session = require('./session').Session;
+var Q = require('q');
 //Schema Object
 //collection name
 //model name
@@ -46,13 +48,44 @@ UserSchema.methods = {
 	},
 	startSession: function(){
 		//Create new session
-		return sessionCtrls.startSession(this._id);
+		/** New Session Function
+		 * @description Create a new session and return a promise
+		 * @params {String} email - Email of Session
+		 */
+		//Session does not already exist
+		var deferred = Q.defer();
+		var session = new Session({userId:this._id});
+		session.save(function (err, result) {
+			if (err) { deferred.reject(err); }
+			if (!result) {
+				deferred.reject(new Error('Session could not be added.'));
+			}
+			deferred.resolve(result);
+		});
+		return deferred.promise;
 	},
 	endSession: function(){
 		//Find current session and mark it as ended
 		//Set active to false
 		console.log('ending session with id:', this.sessionId);
-		return sessionCtrls.endSession(this.sessionId);
+		/** End Session Function
+		 * @description Create a new session and return a promise
+		 * @params {String} email - Email of Session
+		 */
+		var deferred = Q.defer();
+		//Find session by userId and update with active false
+		Session.update({_id:this.sessionId, active:true}, {active:false, endedAt:Date.now()}, {upsert:false}, function (err, affect, result) {
+			console.log('session update:', err, affect, result);
+			if (err) { deferred.reject(err); }
+			if (!result) {
+				deferred.reject(new Error('Session could not be added.'));
+			}
+			if(affect.nModified != 1){
+				console.log('Multiple sessions were ended', affect);
+			}
+			deferred.resolve(result);
+		});
+		return deferred.promise;
 	}
 };
 

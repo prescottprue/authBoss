@@ -87,40 +87,4 @@ exports.delete = function(req, res, next){
 		res.json(result);
 	});
 };
-/** New Session Function
- * @description Create a new session and return a promise
- * @params {String} email - Email of Session
- */
-exports.startSession = function(userId){
-	//Session does not already exist
-	var deferred = Q.defer();
-	var Session = new Session({userId:userId});
-	Session.save(function (err, result) {
-		if (err) { deferred.reject(err); }
-		if (!result) {
-			deferred.reject(new Error('Session could not be added.'));
-		}
-		deferred.resolve(result);
-	});
-	return deferred.promise;
-};
-/** End Session Function
- * @description Create a new session and return a promise
- * @params {String} email - Email of Session
- */
-exports.endSession = function(sessionId){
-	//Session does not already exist
-	var deferred = Q.defer();
-	//Find session by userId and update with active false
-	Session.update({_id:sessionId, active:true}, {active:false, endedAt:Date.now()}, {upsert:false}, function (err, numberAffected, result) {
-		if (err) { deferred.reject(err); }
-		if (!result) {
-			deferred.reject(new Error('Session could not be added.'));
-		}
-		if(numberAffected != 1){
-			console.log('Multiple sessions were ended');
-		}
-		deferred.resolve(result);
-	});
-	return deferred.promise;
-};
+

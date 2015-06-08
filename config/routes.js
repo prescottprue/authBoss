@@ -32,6 +32,11 @@ module.exports =  {
 			type:'PUT',
 			endpoint:'/login',
 			controller: authCtrls.login
+		},
+		{
+			type:'PUT',
+			endpoint:'/logout',
+			controller: authCtrls.logout
 		}
 	],
 	users:[

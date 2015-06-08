@@ -26,6 +26,7 @@ angular.module('authBoss.auth')
 						deferred.reject();
 					} else {
 						$rootScope.currentUser = successRes.data;
+						console.log('rootScope.currentuser set:', $rootScope.currentUser);
 						deferred.resolve($rootScope.currentUser);
 					}
 				}).catch(function (errRes){
@@ -88,9 +89,15 @@ angular.module('authBoss.auth')
 		logout:function (){
 			console.log('user service: logout called');
 			var deferred = $q.defer();
-			Session.destroy();
-			$rootScope.$broadcast(AUTH_EVENTS.logoutSuccess);
-			deferred.resolve(null);
+			$http.post('/logout').then(function(){
+				Session.destroy();
+				$rootScope.currentUser = null;
+				$rootScope.$broadcast(AUTH_EVENTS.logoutSuccess);
+				deferred.resolve(null);
+			}, function(err){
+				console.error('Error logging out:', errRes.data);
+				deferred.reject(err);
+			});
 			return deferred.promise;
 		},
 		updateProfile:function (userId, userData){

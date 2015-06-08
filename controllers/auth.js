@@ -1,4 +1,6 @@
 var User = require('../models/user').User;
+var Session = require('../models/session').Session;
+
 var mongoose = require('mongoose');
 var url = require('url');
 var jwt = require('jsonwebtoken');
@@ -16,8 +18,7 @@ var config = require('../config/default').config;
  * @params {String} password - Password of user
  */
 exports.login = function(req, res, next){
-	console.log('Login request with :', req.body);
-
+	console.log('[AuthCtrl.login] Login request with :', req.body);
 	var query = User.findOne({email:req.body.email});
 	//TODO:Create a new session
 	query.exec(function (err, result){
@@ -27,22 +28,31 @@ exports.login = function(req, res, next){
 			console.error('user not found');
 			return next (new Error('User could not be found'));
 		}
+		var currentUser = result;
 		//Check password against db
-		console.log('user found:', result);
-		bcrypt.compare(req.body.password, result.password, function(err, passwordsMatch){
-			console.log("compare returned:", passwordsMatch);
+		console.log('[AuthCtrl.login] User found:', currentUser);
+		bcrypt.compare(req.body.password, currentUser.password, function(err, passwordsMatch){
+			console.log("[AuthCtrl.login] Compare returned:", passwordsMatch);
 			if(err){return next(err);}
 			if(!passwordsMatch){
 				return next (new Error('Invalid authentication credentials'));
 			}
-			//Encode a JWT withuser info
-			
+			currentUser.startSession().then(function (session){
+				//Encode a JWT with user info
+				var tokenData = currentUser.tokenData();
+				tokenData.sessionId = session._id;
+				var token = jwt.sign(tokenData, config.jwtSecret);
+				res.send({token:token, user:result.strip()});
+			}, function(err){
+				console.error('error creating session');
+				return next (new Error('Invalid authentication credentials'))
+			});
+
 			//TODO: Add session info to token
-			var token = jwt.sign(result.tokenData(), config.jwtSecret);
-			res.send({token:token, user:result.strip()});
 		});
 	});
 };
+
 // start session and create token with userData/session info
 // function startSession(userData){
 
@@ -98,8 +108,13 @@ exports.signup = function(req, res, next){
 exports.logout = function(req, res, next){
 	//TODO:Invalidate token
 	var user = new User(req.user);
+	console.log('ending users session:', user);
 	user.endSession().then(function(){
-		res.send({status:200});
+		console.log('successfully ended session');
+		res.status(200).send({message:'Logout Successful'});
+	}, function(){
+		console.log('Error ending session');
+		res.send({message:'Error ending session'});
 	});
 };
 
@@ -110,13 +125,12 @@ exports.logout = function(req, res, next){
 exports.verify = function(req, res, next){
 	//TODO:Return user info
 	console.log('verify request:', req.user);
-	var query = User.findById(req.user.id);
+	var query = User.findById(req.user.userId);
 	query.exec(function (err, result){
 		console.log('verify returned:', result, err);
 		if (err) { return next(err); }
 		if(!result){ //Matching user already exists
 			// TODO: Respond with a specific error code
-
 			return next(new Error('User with this information does not exist.'));
 		}
 
