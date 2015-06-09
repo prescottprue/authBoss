@@ -4,6 +4,7 @@ var mongoose = require('mongoose');
 var ApplicationSchema = new mongoose.Schema({
 	owner:{type: mongoose.Schema.Types.ObjectId, ref:'User'},
 	name:{type:String, default:'', unique:true, index:true},
+	groups:[{type:mongoose.Schema.Types.ObjectId, ref:'Group'}],
 	createdAt: { type: Date, default: Date.now},
 	updatedAt: { type: Date, default: Date.now}
 });

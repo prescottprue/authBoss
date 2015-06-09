@@ -1,9 +1,4 @@
-angular.module('authBoss', ['ui.router', 'ngMaterial', 'ngStorage', 'angular-jwt', 'authBoss.auth'])
-.run(function(AuthService){
-  AuthService.getCurrentUser(function(){
-    console.log('current user set');
-  });
-})
+angular.module('authBoss', ['ui.router', 'authBoss.auth', 'ngMaterial'])
 .config(function($stateProvider, $urlRouterProvider, $mdThemingProvider, USER_ROLES) {
   $stateProvider
     .state('main', {
@@ -31,13 +26,14 @@ angular.module('authBoss', ['ui.router', 'ngMaterial', 'ngStorage', 'angular-jwt
     .state('users', {
       parent:'nav',
       url:'/users',
+      authorizedRoles:[USER_ROLES.admin, USER_ROLES.editor, USER_ROLES.user],
       templateUrl:'components/user/user-list.html',
       controller:'UserListController'
     })
     .state('user', {
       parent:'nav',
       url:'/user/:id',
-      // authorizedRoles:[USER_ROLES.admin, USER_ROLES.editor, USER_ROLES.user],
+      authorizedRoles:[USER_ROLES.admin, USER_ROLES.editor, USER_ROLES.user],
       templateUrl:'components/user/user-detail.html',
       controller:'UserDetailController'
     })
@@ -55,6 +51,20 @@ angular.module('authBoss', ['ui.router', 'ngMaterial', 'ngStorage', 'angular-jwt
       templateUrl:'components/application/application-detail.html',
       controller:'ApplicationDetailController'
     })
+    .state('groups', {
+      parent:'nav',
+      url:'/groups',
+      authorizedRoles:[USER_ROLES.admin, USER_ROLES.editor, USER_ROLES.user],
+      templateUrl:'components/group/group-list.html',
+      controller:'GroupListController'
+    })
+    .state('group', {
+      parent:'nav',
+      url:'/groups/:name',
+      authorizedRoles:[USER_ROLES.admin, USER_ROLES.editor, USER_ROLES.user],
+      templateUrl:'components/group/group-detail.html',
+      controller:'GroupDetailController'
+    })
     .state('signup', {
       parent:'nav',
       url:'/signup',
@@ -71,6 +81,6 @@ angular.module('authBoss', ['ui.router', 'ngMaterial', 'ngStorage', 'angular-jwt
   $urlRouterProvider.otherwise('/');
   $mdThemingProvider.theme('default')
     .primaryPalette('blue')
-    .accentPalette('grey')
+    .accentPalette('green')
   $mdThemingProvider.theme('docs-dark', 'default').dark();
 });

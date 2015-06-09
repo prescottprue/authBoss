@@ -39,6 +39,10 @@ routeBuilder(routes);
 //Log Errors before they are handled
 app.use(function (err, req, res, next) {
   console.log(err.message, req.originalUrl);
+  if(err){
+    res.status(500);
+  }
+  res.send('Error: ' + err.message);
 });
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

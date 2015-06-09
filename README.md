@@ -12,8 +12,13 @@ This application consists of a NodeJS backend and an AngularJS frontend. The fro
 
 Route configuration is located in the `config/routes.js` file.
 
-## Planning
-* Setup with database
-* Users routes
-* Auth Routes
+
+## TODO
+* App Name Middleware to handle app specific requests
+* User Groups (or muti level role management handled another way)
 * Route Docs
+* $log decorator
+* Angular Plugin
+* Getting Started guide for Angular plugin
+* React Plugin
+* Getting Started guide for React plugin

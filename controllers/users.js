@@ -1,14 +1,31 @@
-var User = require('../models/user').User;
-var mongoose = require('mongoose');
-var url = require('url');
-var _ = require('underscore');
 /**
  * @description User controller functions
  */
-/** User Ctrl
- * @description Log an existing user in
- * @params {String} email - Email of user
- * @params {String} password - Password of user
+var mongoose = require('mongoose');
+var url = require('url');
+var _ = require('underscore');
+var w = require('../lib/mongoPromise');
+
+var User = require('../models/user').User;
+
+/**
+ * @api {get} /users Request Users list
+ * @apiName GetUser
+ * @apiGroup User
+ *
+ * @apiParam {Number} id Users unique ID.
+ *
+ * @apiSuccess {Object} userData Object containing users data.
+ *
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "name": "John",
+ *       "title": "Doe",
+ *     	 "role":"admin",
+ *     }
+ *
+ * @apiUse UserNotFoundError
  */
 exports.get = function(req, res, next){
 	var isList = true;
@@ -18,55 +35,76 @@ exports.get = function(req, res, next){
 		query = User.findById(req.params.id);
 		isList = false;
 	}
-	query.exec(function (err, result){
-		if(err) { return next(err);}
-		if(!result){
-			return next (new Error('User could not be found'));
-		}
-		var resData = result;
+	w.runQuery(query).then(function(userData){
+		//Remove sensitiveuser data from user
 		if(!isList){
-			resData = result.strip();
+			userData = userData.strip();
 		}
-		res.send(resData);
+		res.send(userData);
+	}, function(err){
+		res.status(500).send('User(s) Query error:', err);
 	});
 };
-
-/** Add Ctrl
- * @description Add a user
- * @params {String} email - Email of user
- * @params {String} password - Password of user
- * @params {String} name - Name of user
- * @params {String} title - Title of user
-
- * @params {Boolean} tempPassword - Whether or not to set a temporary password (Also set if there is no password param)
+/**
+ * @api {post} /users Add a new user
+ * @apiName AddUser
+ * @apiGroup User
+ *
+ * @apiParam {String} email Email of user
+ * @apiParam {String} password Password of user
+ * @apiParam {String} name Name of user
+ * @apiParam {String} title Title of user
+ * @apiParam {Boolean} tempPassword Whether or not to set a temporary password (Also set if there is no password param)
+ *
+ * @apiSuccess {Object} userData Object containing newly created users data.
+ *
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "name": "John",
+ *       "title": "Doe",
+ *     	 "role":"admin",
+ *     }
+ *
  */
 exports.add = function(req, res, next){
 	//Query for existing user with same _id
-	var query = User.findOne({"email":req.email}); // find using email field
-	query.exec(function (qErr, qResult){
-		if (qErr) { return next(qErr); }
-		if(qResult){ //Matching user already exists
-			return next(new Error('User with this information already exists.'));
-		}
-		//user does not already exist
+	var query = User.findOne({"email":req.body.email}); // find using email field
+	w.runQuery(query).then(function(addedUser){
 		var user = new User(req.body);
-		User.save(function (err, result) {
-			if (err) { return next(err); }
-			if (!result) {
-
-				return next(new Error('user could not be added.'));
-			}
-			res.json(result);
+		user.saveNew().then(function(newUser){
+			res.json(newUser);
+		}, function(err){
+			console.error('error creating new user:', err);
+			res.status(500).send('user could not be added');
 		});
+	}, function(err){
+		//next() //Pass error on
+		console.error('error creating new user:', err);
+		res.status(500).send({message:'User could not be added.'});
 	});
 };
-/** Update Ctrl
- * @description Update a user
- * @params {String} email - Email of user
- * @params {String} username - Username of user
- * @params {String} password - Password of user
- * @params {String} name - Name of user
- * @params {String} title - Title of user
+/**
+ * @api {put} /users Update a user
+ * @apiName UpdateUser
+ * @apiGroup User
+ *
+ * @apiParam {String} email Email of user
+ * @apiParam {String} password Password of user
+ * @apiParam {String} name Name of user
+ * @apiParam {String} title Title of user
+ * @apiParam {String} role Role of user (admin, user)
+ *
+ * @apiSuccess {Object} userData Object containing updated users data.
+ *
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "name": "John",
+ *       "title": "Doe",
+ *     	 "role":"admin",
+ *     }
+ *
  */
 exports.update = function(req, res, next){
 	if(req.params.id){
@@ -82,18 +120,31 @@ exports.update = function(req, res, next){
 		res.status(400).send({message:'User id required'});
 	}
 };
-/** Delete Ctrl
- * @description Delete a user
- * @params {String} email - Email of user
+/**
+ * @api {delete} /user/:id Delete a user
+ * @apiName DeleteUser
+ * @apiGroup User
+ *
+ * @apiParam {String} email Email of user
+ *
+ * @apiSuccess {Object} userData Object containing deleted users data.
+ *
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "name": "John",
+ *       "title": "Doe",
+ *     	 "role":"admin",
+ *     }
+ *
  */
 exports.delete = function(req, res, next){
 	var urlParams = url.parse(req.url, true).query;
 	var query = User.findOneAndRemove({'_id':req.params.id}); // find and delete using id field
-	query.exec(function (err, result){
-		if (err) { return next(err); }
-		if (!result) {
-			return next(new Error('User could not be deleted.'));
-		}
+	w.runQuery(query).then(function(){
 		res.json(result);
+	}, function(err){
+		console.error('User could not be deleted:', err);
+		res.status(500).send({message:'User cound not be deleted'});
 	});
 };

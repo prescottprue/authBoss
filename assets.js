@@ -22,6 +22,9 @@ module.exports = {
 		'/components/application/application.service.js',
 		'/components/application/application-list.controller.js',
 		'/components/application/application-detail.controller.js',
+		'/components/group/group.service.js',
+		'/components/group/group-list.controller.js',
+		'/components/group/group-detail.controller.js',
 		'/components/account/account.controller.js'
 	]
 }

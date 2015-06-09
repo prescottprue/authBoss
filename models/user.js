@@ -88,7 +88,21 @@ UserSchema.methods = {
 		return deferred.promise;
 	}
 };
-
+UserSchema.methods = {
+	//Wrap query in promise
+	saveNew:function(){
+		var d = q.defer();
+		console.log('this:', this);
+		this.save(function (err, result){
+			if(err) { d.reject(err);}
+			if(!result){
+				d.reject(new Error('New User could not be saved'));
+			}
+			d.resolve(result);
+		});
+		return d.promise;
+	}
+};
 /*
  * Construct `User` model from `UserSchema`
  */

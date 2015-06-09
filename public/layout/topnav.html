@@ -23,3 +23,12 @@
       <!-- <md-button class="md-warn" ui-sref="signup" href="#/signup">Login</md-button> -->
   </div>
 </md-toolbar>
+<md-toolbar class="md-accent" ng-if="currentUser">
+  <div class="md-toolbar-tools">
+    <span flex></span>
+    <md-button class="" ui-sref="users">Users</md-button>
+    <md-button class="" ui-sref="apps">Apps</md-button>
+    <md-button class="" ui-sref="groups">Groups</md-button>
+    <span flex></span>
+  </div>
+</md-toolbar>

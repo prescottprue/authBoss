@@ -1,4 +1,4 @@
-angular.module('authBoss.auth', ['angular-jwt', 'ngStorage'])
+angular.module('authBoss.auth', ['ui.router','angular-jwt', 'ngStorage'])
 .constant('AUTH_EVENTS', {
   loginSuccess: 'auth-login-success',
   loginFailed: 'auth-login-failed',

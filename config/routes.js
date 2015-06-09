@@ -3,6 +3,7 @@ var indexCtrls = require('../controllers/index');
 var authCtrls = require('../controllers/auth');
 var userCtrls = require('../controllers/users');
 var appCtrls = require('../controllers/applications');
+var groupCtrls = require('../controllers/group');
 
 
 
@@ -72,7 +73,6 @@ module.exports =  {
 		}
 	],
 	applications:[
-
 		{
 			type:'GET',
 			endpoint: '/apps',
@@ -97,6 +97,33 @@ module.exports =  {
 			type:'DELETE',
 			endpoint: '/apps/:id',
 			controller:appCtrls['delete']
+		}
+	],
+	groups:[
+		{
+			type:'GET',
+			endpoint: '/groups',
+			controller:groupCtrls.get
+		},
+		{
+			type:'GET',
+			endpoint: '/groups/:name',
+			controller:groupCtrls.get
+		},
+		{
+			type:'POST',
+			endpoint: '/groups',
+			controller:groupCtrls.add
+		},
+		{
+			type:'PUT',
+			endpoint: '/groups/:name',
+			controller:groupCtrls.update
+		},
+		{
+			type:'DELETE',
+			endpoint: '/groups/:name',
+			controller:groupCtrls['delete']
 		}
 	]
 };
