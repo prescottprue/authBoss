@@ -11,11 +11,17 @@
         <label>Email</label>
         <input ng-model="user.email" type="email">
       </md-input-container>
-      <md-input-container >
         <!-- Use floating placeholder instead of label -->
+
+    </section>
+    <section layout="column" layout-sm="column">
+      <!-- <h4 class="md-title">Role</h4> -->
         <label>Role</label>
-        <input ng-model="user.role" type="text">
-      </md-input-container>
+
+      <md-select ng-model="user.role" md-on-open="getRoles()" style="min-width: 200px;">
+        <md-select-label>{{ user ? user.role.name : 'Assign to user' }}</md-select-label>
+        <md-option ng-value="role" ng-repeat="role in rolesList">{{role.name}}</md-option>
+      </md-select>
     </section>
     <section layout="row" layout-sm="column" layout-align="center center">
       <md-button class="md-raised" ng-click="update()">Save</md-button>

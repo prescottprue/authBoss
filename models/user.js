@@ -14,7 +14,7 @@ var UserSchema = new mongoose.Schema(
 		email:{type: String, default:'', index:true},
 		title:{type: String, default:''},
 		password:{type: String, default:''},
-		role:{type: String, default:''},
+		role:{type: mongoose.Schema.Types.ObjectId, ref:'Role'},
 		sessionId:{type:String},
 		createdAt: { type: Date, default: Date.now, index: true},
 		updatedAt: { type: Date, default: Date.now, index: true}
@@ -35,7 +35,7 @@ UserSchema.virtual('id')
 })
 .set(function (id){
 	return this._id = id;
-})
+});
 UserSchema.methods = {
 	//Remove values that should not be sent
 	strip: function(){
@@ -46,6 +46,24 @@ UserSchema.methods = {
 		data.userId = this.toJSON().id;
 		return data;
 	},
+	//Wrap query in promise
+	saveNew:function(){
+		var d = Q.defer();
+		console.log('this:', this);
+		this.save(function (err, result){
+			if(err) { d.reject(err);}
+			if(!result){
+				d.reject(new Error('New User could not be saved'));
+			}
+			d.resolve(result);
+		});
+		return d.promise;
+	},
+	//Log user in
+	login:function(){
+
+	},
+	//Create a new session with user information attached
 	startSession: function(){
 		//Create new session
 		/** New Session Function
@@ -86,21 +104,6 @@ UserSchema.methods = {
 			deferred.resolve(result);
 		});
 		return deferred.promise;
-	}
-};
-UserSchema.methods = {
-	//Wrap query in promise
-	saveNew:function(){
-		var d = q.defer();
-		console.log('this:', this);
-		this.save(function (err, result){
-			if(err) { d.reject(err);}
-			if(!result){
-				d.reject(new Error('New User could not be saved'));
-			}
-			d.resolve(result);
-		});
-		return d.promise;
 	}
 };
 /*

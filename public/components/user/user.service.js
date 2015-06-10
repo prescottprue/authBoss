@@ -5,7 +5,12 @@ angular.module('authBoss')
 		update:function(userId, userData){
 			var deferred = $q.defer();
 			console.log('UserService: Updating user with id: ' + userId, userData);
-			$http.put('/user/'+ userId, userData)
+			var updateData = userData;
+			if(_.has(updateData, "role") && _.isObject(updateData.role)){
+				updateData.role = updateData.role._id; //Just send id
+			}
+			console.log('update with:', updateData);
+			$http.put('/user/'+ userId, updateData)
 			.then(function (apiRes){
 				console.log('UserService: User data loaded:', apiRes.data);
 				deferred.resolve(apiRes.data);

@@ -32,7 +32,7 @@ exports.get = function(req, res, next){
 	var query = User.find({});
 	if(req.params.id){ //Get data for a specific user
 		console.log('user request with id:', req.params.id);
-		query = User.findById(req.params.id);
+		query = User.findById(req.params.id).populate({path:'role', select:'name'});
 		isList = false;
 	}
 	w.runQuery(query).then(function(userData){

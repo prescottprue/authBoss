@@ -1,11 +1,10 @@
 angular.module('authBoss')
-.controller('UserDetailController', ['$scope', '$http', '$stateParams', 'userService', function($scope, $http, $stateParams, userService){
+.controller('UserDetailController', ['$scope', '$http', '$stateParams', 'userService', 'rolesService', function($scope, $http, $stateParams, userService, rolesService){
 		$scope.data = {
 			loading:false,
 			error:null,
 			editing:false
 		};
-
 		if($stateParams.id){
 			$scope.data.loading = true;
 			console.log('userId:', $stateParams.id)
@@ -23,11 +22,16 @@ angular.module('authBoss')
 			console.error('User Detail Ctrl: Invalid user id state param');
 			$scope.data.error = 'User Id is required to load user data';
 		}
-
+		$scope.getRoles = function(){
+			return rolesService.get().then(function(rolesList){
+				$scope.rolesList = rolesList;
+			});
+		};
 		$scope.update = function(){
 			$scope.data.editing = false;
 			$scope.data.loading = true;
-			userService.update($stateParams.id, $scope.user)
+			var userData = $scope.user;
+			userService.update($stateParams.id, userData)
 			.then(function (updatedUserData){
 				console.log('User Detail Ctrl: User data loaded:', updatedUserData);
 				// $scope.user = apiRes.data;

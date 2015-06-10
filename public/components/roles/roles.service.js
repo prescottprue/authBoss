@@ -21,6 +21,7 @@ angular.module('authBoss.roles')
 			var deferred = $q.defer();
 			// console.log('Loading role with ID:', roleName);
 			var endpointUrl = "/roles";
+			console.log('getting roles');
 			var isList = true;
 			if(roleName){
 				endpointUrl = endpointUrl + "/" + roleName;

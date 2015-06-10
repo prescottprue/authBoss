@@ -6,7 +6,9 @@ module.exports = {
 		'/lib/ui-router/release/angular-ui-router.min.js',
 		'/lib/angular-material/angular-material.min.js',
 		'/lib/ngstorage/ngStorage.min.js',
-		'/lib/angular-jwt/dist/angular-jwt.min.js'
+		'/lib/angular-jwt/dist/angular-jwt.min.js',
+		'/lib/underscore/underscore-min.js'
+
 	],
 	app:[
 		'/app.js',
