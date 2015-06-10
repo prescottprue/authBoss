@@ -1,4 +1,3 @@
-var User = require('../models/user').User;
 var Application = require('../models/application').Application;
 var mongoose = require('mongoose');
 var url = require('url');
@@ -7,74 +6,62 @@ var _ = require('underscore');
  * @description Application controller functions
  */
 /** Get Ctrl
- * @description Log an existing user in
- * @params {String} email - Email of user
- * @params {String} password - Password of user
+ * @description Log an existing application in
+ * @params {String} email - Email of application
+ * @params {String} password - Password of application
  */
 exports.get = function(req, res, next){
 	var isList = true;
 	var query = Application.find({}).populate({path:'owner', select:'name title email'});
-	if(req.params.id){ //Get data for a specific user
-		console.log('user request with id:', req.params.id);
-		query = User.findById(req.params.id);
+	if(req.params.name){ //Get data for a specific application
+		console.log('application request with id:', req.params.name);
+		query = Application.findOne({name:req.params.name});
 		isList = false;
 	}
 	query.exec(function (err, result){
 		if(err) { return next(err);}
 		if(!result){
-			return next (new Error('User could not be found'));
+			return next (new Error('Application could not be found'));
 		}
-		var resData = result;
-		if(!isList){
-			resData = result.strip();
-		}
-		res.send(resData);
+		res.send(result);
 	});
 };
 
 /** Add Ctrl
- * @description Add a user
- * @params {String} email - Email of user
- * @params {String} password - Password of user
- * @params {String} name - Name of user
- * @params {String} title - Title of user
-
- * @params {Boolean} tempPassword - Whether or not to set a temporary password (Also set if there is no password param)
+ * @description Add an application
+ * @params {String} name - Name of application
+ * @params {String} owner - ID of account that created the application
  */
 exports.add = function(req, res, next){
-	//Query for existing user with same _id
-	var query = Application.findOne({"name":req.name}); // find using email field
+	//Query for existing application with same _id
+	console.log('add request with name: ' + req.params.name + ' with body:', req.body);
+	var query = Application.findOne({"name":req.params.name}); // find using name field
 	query.exec(function (qErr, qResult){
 		if (qErr) { return next(qErr); }
-		if(qResult){ //Matching user already exists
+		if(qResult){ //Matching application already exists
 			return next(new Error('Application with this information already exists.'));
 		}
-		//user does not already exist
-		var user = new User(req.body);
+		//application does not already exist
+		var application = new Application(req.body);
 		Application.save(function (err, result) {
 			if (err) { return next(err); }
 			if (!result) {
-				return next(new Error('user could not be added.'));
+				return next(new Error('application could not be added.'));
 			}
 			res.json(result);
 		});
 	});
 };
 /** Update Ctrl
- * @description Update a user
- * @params {String} email - Email of user
- * @params {String} username - Username of user
- * @params {String} password - Password of user
- * @params {String} name - Name of user
- * @params {String} title - Title of user
+ * @description Update an application
+ * @params {String} name - Name of application
+ * @params {String} title - Title of application
  */
 exports.update = function(req, res, next){
-	if(req.params.id){
-		Application.update({_id:req.params.id}, req.body, {upsert:true}, function (err, numberAffected, result) {
+	console.log('app update request with name: ' + req.params.name + ' with body:', req.body);
+	if(req.params.name){
+		Application.update({name:req.params.name}, req.body, {upsert:true}, function (err, numberAffected, result) {
 			if (err) { return next(err); }
-			// if (!result) {
-			// 	return next(new Error('user could not be added.'));
-			// }
 			//TODO: respond with updated data instead of passing through req.body
 			res.json(req.body);
 		});
@@ -83,12 +70,12 @@ exports.update = function(req, res, next){
 	}
 };
 /** Delete Ctrl
- * @description Delete a user
- * @params {String} email - Email of user
+ * @description Delete an application
+ * @params {Route Param} id - Id of application
  */
 exports.delete = function(req, res, next){
 	var urlParams = url.parse(req.url, true).query;
-	var query = Application.findOneAndRemove({'_id':req.params.id}); // find and delete using id field
+	var query = Application.findOneAndRemove({'name':req.params.name}); // find and delete using id field
 	query.exec(function (err, result){
 		if (err) { return next(err); }
 		if (!result) {

@@ -3,9 +3,7 @@ var indexCtrls = require('../controllers/index');
 var authCtrls = require('../controllers/auth');
 var userCtrls = require('../controllers/users');
 var appCtrls = require('../controllers/applications');
-var groupCtrls = require('../controllers/group');
-
-
+var rolesCtrl = require('../controllers/roles');
 
 module.exports =  {
 	//login(get token)
@@ -80,7 +78,7 @@ module.exports =  {
 		},
 		{
 			type:'GET',
-			endpoint: '/apps/:id',
+			endpoint: '/apps/:name',
 			controller:appCtrls.get
 		},
 		{
@@ -90,40 +88,40 @@ module.exports =  {
 		},
 		{
 			type:'PUT',
-			endpoint: '/apps/:id',
+			endpoint: '/apps/:name',
 			controller:appCtrls.update
 		},
 		{
 			type:'DELETE',
-			endpoint: '/apps/:id',
+			endpoint: '/apps/:name',
 			controller:appCtrls['delete']
 		}
 	],
-	groups:[
+	roles:[
 		{
 			type:'GET',
-			endpoint: '/groups',
-			controller:groupCtrls.get
+			endpoint: '/roles',
+			controller:rolesCtrl.getList
 		},
 		{
 			type:'GET',
-			endpoint: '/groups/:name',
-			controller:groupCtrls.get
+			endpoint: '/roles/:name',
+			controller:rolesCtrl.get
 		},
 		{
 			type:'POST',
-			endpoint: '/groups',
-			controller:groupCtrls.add
+			endpoint: '/roles',
+			controller:rolesCtrl.add
 		},
 		{
 			type:'PUT',
-			endpoint: '/groups/:name',
-			controller:groupCtrls.update
+			endpoint: '/roles/:name',
+			controller:rolesCtrl.update
 		},
 		{
 			type:'DELETE',
-			endpoint: '/groups/:name',
-			controller:groupCtrls['delete']
+			endpoint: '/roles/:name',
+			controller:rolesCtrl['delete']
 		}
 	]
 };

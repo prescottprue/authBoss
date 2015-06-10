@@ -11,20 +11,26 @@ module.exports = {
 	app:[
 		'/app.js',
 		'/app.controller.js',
+
 		'/shared/auth/auth.module.js',
 		'/shared/auth/auth.service.js',
 		'/shared/auth/auth.config.js',
 		'/shared/auth/auth.directive.js',
 		'/shared/auth/auth-session.service.js',
+
 		'/components/user/user.service.js',
 		'/components/user/user-list.controller.js',
 		'/components/user/user-detail.controller.js',
+
 		'/components/application/application.service.js',
 		'/components/application/application-list.controller.js',
 		'/components/application/application-detail.controller.js',
-		'/components/group/group.service.js',
-		'/components/group/group-list.controller.js',
-		'/components/group/group-detail.controller.js',
+
+		'/components/roles/roles.module.js',
+		'/components/roles/roles.service.js',
+		'/components/roles/roles.controller.js',
+		'/components/roles/role.controller.js',
+
 		'/components/account/account.controller.js'
 	]
 }

@@ -6,16 +6,14 @@
         <thead>
           <tr>
             <th>Name</th>
-            <th>Email</th>
-            <th>Role</th>
+            <th>CreatedAt</th>
             <th>Delete</th>
           </tr>
         </thead>
         <tbody>
-          <tr ng-repeat="user in users"  ui-sref="user({id:user._id})">
-            <td data-title="Name">{{user.name}}</td>
-            <td data-title="Email">{{user.email}}</td>
-            <td data-title="Role">{{user.role || "User"}}</td>
+          <tr ng-repeat="role in roles"  ui-sref="role({name:role.name})">
+            <td data-title="Name">{{role.name}}</td>
+            <td data-title="CreatedAt">{{role.createdAt}}</td>
             <td data-title="Delete">      
               <md-button ng-click="delete($index)"
                  aria-label="Delete"

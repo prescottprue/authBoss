@@ -1,4 +1,4 @@
-angular.module('authBoss', ['ui.router', 'authBoss.auth', 'ngMaterial'])
+angular.module('authBoss', ['ui.router', 'ngMaterial', 'ngStorage', 'angular-jwt', 'authBoss.auth', 'authBoss.roles'])
 .config(function($stateProvider, $urlRouterProvider, $mdThemingProvider, USER_ROLES) {
   $stateProvider
     .state('main', {
@@ -51,19 +51,19 @@ angular.module('authBoss', ['ui.router', 'authBoss.auth', 'ngMaterial'])
       templateUrl:'components/application/application-detail.html',
       controller:'ApplicationDetailController'
     })
-    .state('groups', {
+    .state('roles', {
       parent:'nav',
-      url:'/groups',
+      url:'/roles',
       authorizedRoles:[USER_ROLES.admin, USER_ROLES.editor, USER_ROLES.user],
-      templateUrl:'components/group/group-list.html',
-      controller:'GroupListController'
+      templateUrl:'components/roles/roles.html',
+      controller:'RolesController'
     })
-    .state('group', {
+    .state('role', {
       parent:'nav',
-      url:'/groups/:name',
+      url:'/roles/:name',
       authorizedRoles:[USER_ROLES.admin, USER_ROLES.editor, USER_ROLES.user],
-      templateUrl:'components/group/group-detail.html',
-      controller:'GroupDetailController'
+      templateUrl:'components/roles/role.html',
+      controller:'RoleController'
     })
     .state('signup', {
       parent:'nav',

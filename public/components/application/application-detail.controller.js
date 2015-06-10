@@ -9,12 +9,12 @@ angular.module('authBoss')
 		if($stateParams.name){
 			$scope.data.loading = true;
 			console.log('applicationName:', $stateParams.name)
-			applicationService.get($stateParams.id)
+			applicationService.get($stateParams.name)
 			.then(function (applicationData){
 				console.log('application Detail Ctrl: application data loaded:', applicationData);
 				$scope.application = applicationData;
 			}).catch(function (err){
-				console.error('application Detail Ctrl: Error loading application with id:' + $stateParams.id, err);
+				console.error('application Detail Ctrl: Error loading application with id:' + $stateParams.name, err);
 				$scope.data.error = err;
 			}).finally(function(){
 				$scope.data.loading = false;

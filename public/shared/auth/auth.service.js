@@ -1,16 +1,16 @@
 angular.module('authBoss.auth')
 
-.factory('AuthService', ['$q', '$http', '$sessionStorage','$rootScope', 'Session', 'AUTH_EVENTS', 'USER_ROLES', function ($q, $http, $sessionStorage, $rootScope, Session, AUTH_EVENTS, USER_ROLES) {
+.factory('AuthService', ['$q', '$http', '$log', '$sessionStorage','$rootScope', 'Session', 'AUTH_EVENTS', 'USER_ROLES', function ($q, $http, $log, $sessionStorage, $rootScope, Session, AUTH_EVENTS, USER_ROLES) {
 	return {
 		isAuthenticated : function (){
 			return Session.exists();
 		},
 		isAuthorized: function (authorizedRoles){
-			console.log('authorized roles:', authorizedRoles);
+			$log.log('Authorized roles:', authorizedRoles);
 			 if (!angular.isArray(authorizedRoles)) {
 	      authorizedRoles = [authorizedRoles];
 	    }
-	    console.info('role location:', authorizedRoles.indexOf(Session.getRole()));
+	    $log.info('[isAuthorized()] Role: '+ Session.getRole() +' Is allowed:', authorizedRoles.indexOf(Session.getRole()) !== -1);
 	    return (this.isAuthenticated() && authorizedRoles.indexOf(Session.getRole()) !== -1);
 		},
 		getCurrentUser:function (){
@@ -18,7 +18,6 @@ angular.module('authBoss.auth')
 			if($rootScope.currentUser){
 				deferred.resolve($rootScope.currentUser);
 			} else if(Session.exists()){
-				console.log('Requesting user information with:', Session.token());
 				$http.get('/user')
 				.then(function (successRes){
 					if(successRes.status == 401){
@@ -26,14 +25,14 @@ angular.module('authBoss.auth')
 						deferred.reject();
 					} else {
 						$rootScope.currentUser = successRes.data;
-						console.log('rootScope.currentuser set:', $rootScope.currentUser);
 						deferred.resolve($rootScope.currentUser);
 					}
 				}).catch(function (errRes){
+					$log.error('Error in requesting user:', errRes);
 					deferred.reject(errRes.data);
 				});
 			} else {
-				console.log('No token found');
+				$log.info('No token found');
 				deferred.reject();
 			}
 			return deferred.promise;

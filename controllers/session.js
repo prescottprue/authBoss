@@ -19,7 +19,6 @@ exports.get = function(req, res, next){
 		query = Session.findById(req.params.id);
 		isList = false;
 	}
-
 	query.exec(function (err, result){
 		if(err) { return next(err);}
 		if(!result){
