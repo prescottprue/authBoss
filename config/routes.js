@@ -3,7 +3,7 @@ var indexCtrls = require('../controllers/index');
 var authCtrls = require('../controllers/auth');
 var userCtrls = require('../controllers/users');
 var appCtrls = require('../controllers/applications');
-
+var rolesCtrl = require('../controllers/roles');
 
 
 module.exports =  {
@@ -97,6 +97,33 @@ module.exports =  {
 			type:'DELETE',
 			endpoint: '/apps/:id',
 			controller:appCtrls['delete']
+		}
+	],
+	roles:[
+		{
+			type:'GET',
+			endpoint: '/roles',
+			controller:rolesCtrl.getList
+		},
+		{
+			type:'GET',
+			endpoint: '/roles/:id',
+			controller:rolesCtrl.get
+		},
+		{
+			type:'POST',
+			endpoint: '/roles',
+			controller:rolesCtrl.add
+		},
+		{
+			type:'PUT',
+			endpoint: '/roles/:id',
+			controller:rolesCtrl.update
+		},
+		{
+			type:'DELETE',
+			endpoint: '/roles/:id',
+			controller:rolesCtrl['delete']
 		}
 	]
 };

@@ -22,6 +22,10 @@ module.exports = {
 		'/components/application/application.service.js',
 		'/components/application/application-list.controller.js',
 		'/components/application/application-detail.controller.js',
+		'/components/roles/roles.module.js',
+		'/components/roles/roles.service.js',
+		'/components/roles/roles.controller.js',
+		'/components/roles/role.controller.js',
 		'/components/account/account.controller.js'
 	]
 }

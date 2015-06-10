@@ -1,4 +1,4 @@
-angular.module('authBoss', ['ui.router', 'ngMaterial', 'ngStorage', 'angular-jwt', 'authBoss.auth'])
+angular.module('authBoss', ['ui.router', 'ngMaterial', 'ngStorage', 'angular-jwt', 'authBoss.auth', 'authBoss.roles'])
 .run(function(AuthService){
   AuthService.getCurrentUser(function(){
     console.log('current user set');
@@ -55,6 +55,20 @@ angular.module('authBoss', ['ui.router', 'ngMaterial', 'ngStorage', 'angular-jwt
       templateUrl:'components/application/application-detail.html',
       controller:'ApplicationDetailController'
     })
+    .state('roles', {
+      parent:'nav',
+      url:'/roles',
+      authorizedRoles:[USER_ROLES.admin, USER_ROLES.editor, USER_ROLES.user],
+      templateUrl:'components/roles/roles.html',
+      controller:'RolesController'
+    })
+    .state('role', {
+      parent:'nav',
+      url:'/roles/:name',
+      authorizedRoles:[USER_ROLES.admin, USER_ROLES.editor, USER_ROLES.user],
+      templateUrl:'components/roles/role.html',
+      controller:'RoleController'
+    })
     .state('signup', {
       parent:'nav',
       url:'/signup',
@@ -71,6 +85,6 @@ angular.module('authBoss', ['ui.router', 'ngMaterial', 'ngStorage', 'angular-jwt
   $urlRouterProvider.otherwise('/');
   $mdThemingProvider.theme('default')
     .primaryPalette('blue')
-    .accentPalette('grey')
+    .accentPalette('green')
   $mdThemingProvider.theme('docs-dark', 'default').dark();
 });
