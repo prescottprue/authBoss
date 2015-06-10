@@ -10,29 +10,29 @@ angular.module('authBoss.roles')
 			$scope.data.loading = true;
 			console.log('role name:', $stateParams.name)
 			rolesService.get($stateParams.name)
-			.then(function (userData){
-				console.log('User Detail Ctrl: user data loaded:', userData);
-				$scope.user = userData;
+			.then(function (roleData){
+				console.log('Role Detail Ctrl: role data loaded:', roleData);
+				$scope.role = roleData;
 			}).catch(function (err){
-				console.error('User Detail Ctrl: Error loading user with id:' + $stateParams.name, err);
+				console.error('Role Detail Ctrl: Error loading role with id:' + $stateParams.name, err);
 				$scope.data.error = err;
 			}).finally(function(){
 				$scope.data.loading = false;
 			});
 		} else {
-			console.error('User Detail Ctrl: Invalid user id state param');
-			$scope.data.error = 'User Id is required to load user data';
+			console.error('Role Detail Ctrl: Invalid role id state param');
+			$scope.data.error = 'Role Id is required to load role data';
 		}
 
 		$scope.update = function(){
 			$scope.data.editing = false;
 			$scope.data.loading = true;
-			rolesService.update($stateParams.name, $scope.user)
-			.then(function (updatedUserData){
-				console.log('User Detail Ctrl: User data loaded:', updatedUserData);
-				// $scope.user = apiRes.data;
+			rolesService.update($stateParams.name, $scope.role)
+			.then(function (updatedRoleData){
+				console.log('Role Detail Ctrl: Role data loaded:', updatedRoleData);
+				// $scope.role = apiRes.data;
 			}).catch(function (err){
-				console.error('Error loading users', err);
+				console.error('Error loading roles', err);
 				$scope.data.error = err;
 			}).finally(function(){
 				$scope.data.loading = false;

@@ -80,7 +80,7 @@ module.exports =  {
 		},
 		{
 			type:'GET',
-			endpoint: '/apps/:id',
+			endpoint: '/apps/:name',
 			controller:appCtrls.get
 		},
 		{
@@ -90,12 +90,12 @@ module.exports =  {
 		},
 		{
 			type:'PUT',
-			endpoint: '/apps/:id',
+			endpoint: '/apps/:name',
 			controller:appCtrls.update
 		},
 		{
 			type:'DELETE',
-			endpoint: '/apps/:id',
+			endpoint: '/apps/:name',
 			controller:appCtrls['delete']
 		}
 	],
@@ -107,7 +107,7 @@ module.exports =  {
 		},
 		{
 			type:'GET',
-			endpoint: '/roles/:id',
+			endpoint: '/roles/:name',
 			controller:rolesCtrl.get
 		},
 		{
@@ -117,12 +117,12 @@ module.exports =  {
 		},
 		{
 			type:'PUT',
-			endpoint: '/roles/:id',
+			endpoint: '/roles/:name',
 			controller:rolesCtrl.update
 		},
 		{
 			type:'DELETE',
-			endpoint: '/roles/:id',
+			endpoint: '/roles/:name',
 			controller:rolesCtrl['delete']
 		}
 	]

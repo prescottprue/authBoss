@@ -5,7 +5,6 @@
       <table id="table" class="table table-hover table-mc-light-blue">
         <thead>
           <tr>
-            <th>ID</th>
             <th>Name</th>
             <th>Email</th>
             <th>Role</th>
@@ -14,7 +13,6 @@
         </thead>
         <tbody>
           <tr ng-repeat="user in users"  ui-sref="user({id:user._id})">
-            <td data-title="Name">{{user._id}}</td>
             <td data-title="Name">{{user.name}}</td>
             <td data-title="Email">{{user.email}}</td>
             <td data-title="Role">{{user.role || "User"}}</td>

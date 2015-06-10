@@ -6,16 +6,14 @@
         <label>Name</label>
         <input ng-model="role.name" type="text">
       </md-input-container>
-      <md-input-container >
-        <!-- Use floating placeholder instead of label -->
-        <label>Email</label>
-        <input ng-model="role.email" type="email">
-      </md-input-container>
-      <md-input-container >
-        <!-- Use floating placeholder instead of label -->
-        <label>Role</label>
-        <input ng-model="role.role" type="text">
-      </md-input-container>
+    </section>
+    <section layout="column" layout-sm="column" layout-align="">
+      <span>Accounts:</span>
+      <ul>
+        <li ng-repeat="account in role.accounts">
+          {{account.name}}
+        </li>
+      </ul>
     </section>
     <section layout="row" layout-sm="column" layout-align="center center">
       <md-button class="md-raised" ng-click="update()">Save</md-button>

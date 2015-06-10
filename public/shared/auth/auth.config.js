@@ -29,7 +29,7 @@ angular.module('authBoss.auth')
   });
 })
 //Intercept $http requests and responses
-.factory('AuthInterceptor', function ($rootScope, $q, AUTH_EVENTS, Session) {
+.factory('AuthInterceptor', function ($rootScope, $q, AUTH_EVENTS, Session, $log) {
   function isHTTP(url){
     return url.search(".html") == -1
   }
@@ -40,7 +40,7 @@ angular.module('authBoss.auth')
       if (Session.exists() && isHTTP(config.url)) {
         config.headers.Authorization = "Bearer " + Session.token();
         // config.cache = true;
-        console.log("token["+Session.token()+"], config.headers: ", config.headers);
+        $log.debug("Authorized request to: " + config.url);
       }
       return config || $q.when(config);
     },

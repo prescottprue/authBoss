@@ -28,6 +28,7 @@ exports.getList = function(req, res, next){
  * @params {String} password - Password of Role
  */
 exports.get = function(req, res, next){
+	console.log('roles get request:', req.params.name, req.body);
 	if(req.params.name){ //Get data for a specific Role
 		console.log('Role request:', req.params.name);
 		var query = Role.findOne({name:req.params.name}).populate({path:'accounts', select:'name title role'});

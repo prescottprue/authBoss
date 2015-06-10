@@ -2,24 +2,24 @@ angular.module('authBoss.roles')
 .factory('rolesService', ['$q', '$http', '$rootScope', function ($q, $http, $rootScope) {
 	var roles = null;
 	return {
-		update:function(roleName, userData){
+		update:function(roleName, roleData){
 			var deferred = $q.defer();
-			console.log('UserService: Updating user with id: ' + roleName, userData);
-			$http.put('/roles/'+ roleName, userData)
+			console.log('UserService: Updating role with id: ' + roleName, roleData);
+			$http.put('/roles/'+ roleName, roleData)
 			.then(function (apiRes){
 				console.log('UserService: User data loaded:', apiRes.data);
 				deferred.resolve(apiRes.data);
 			})
 			.catch(function (errRes){
 				//TODO: Handle different error response codes
-				console.error('Error loading user', errRes.data);
+				console.error('Error loading role', errRes.data);
 				deferred.reject(errRes.data);
 			});
 			return deferred.promise;
 		},
 		get:function(roleName){
 			var deferred = $q.defer();
-			// console.log('Loading user with ID:', roleName);
+			// console.log('Loading role with ID:', roleName);
 			var endpointUrl = "/roles";
 			var isList = true;
 			if(roleName){
@@ -28,36 +28,36 @@ angular.module('authBoss.roles')
 			}
 			$http.get(endpointUrl)
 			.then(function (apiRes){
-				console.log('user data loaded:', apiRes.data);
+				console.log('role data loaded:', apiRes.data);
 				if(isList){
 					roles = apiRes.data;
 				} else {
-					//TODO: Update user in list
+					//TODO: Update role in list
 				}
 				deferred.resolve(apiRes.data);
 			})
 			.catch(function (errRes){
 				//TODO: Handle different error response codes
-				console.error('Error loading user data', errRes.data);
+				console.error('Error loading role data', errRes.data);
 				deferred.reject(errRes.data);
 			});
 			return deferred.promise;
 		},
 		del:function(roleId){
 			var deferred = $q.defer();
-			// console.log('Loading user with ID:', roleId);
+			// console.log('Loading role with ID:', roleId);
 			if(roleId){
 				endpointUrl =  "roles/" + roleId;
 			}
 			$http.delete(endpointUrl)
 			.then(function (apiRes){
-				console.log('user succesfully deleted:', apiRes.data);
+				console.log('role succesfully deleted:', apiRes.data);
 				roles = apiRes.data;
 				deferred.resolve(apiRes.data);
 			})
 			.catch(function (errRes){
 				//TODO: Handle different error response codes
-				console.error('Error deleting user', errRes.data);
+				console.error('Error deleting role', errRes.data);
 				deferred.reject(errRes.data);
 			});
 			return deferred.promise;

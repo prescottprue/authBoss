@@ -28,7 +28,6 @@ angular.module('authBoss')
 			}
 			$http.get(endpointUrl)
 			.then(function (apiRes){
-				console.log('user data loaded:', apiRes.data);
 				if(isList){
 					users = apiRes.data;
 				} else {
@@ -38,7 +37,7 @@ angular.module('authBoss')
 			})
 			.catch(function (errRes){
 				//TODO: Handle different error response codes
-				console.error('Error loading user data', errRes.data);
+				$log.error('Error loading user(s) data', errRes.data);
 				deferred.reject(errRes.data);
 			});
 			return deferred.promise;
