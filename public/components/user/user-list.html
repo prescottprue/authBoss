@@ -15,7 +15,7 @@
           <tr ng-repeat="user in users"  ui-sref="user({id:user._id})">
             <td data-title="Name">{{user.name}}</td>
             <td data-title="Email">{{user.email}}</td>
-            <td data-title="Role">{{user.role || "User"}}</td>
+            <td data-title="Role">{{user.role.name || "User"}}</td>
             <td data-title="Delete">      
               <md-button ng-click="delete($index)"
                  aria-label="Delete"

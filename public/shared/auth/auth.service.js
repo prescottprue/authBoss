@@ -44,8 +44,7 @@ angular.module('authBoss.auth')
 	      email: signupData.email,
 	      password: signupData.password,
 	      name:signupData.name,
-	      title:signupData.title,
-	      role:"user"
+	      title:signupData.title
 	    })
 	    .then(function (successRes){
 	    	console.log('AuthService: Signup successful:', successRes.data);
@@ -94,7 +93,7 @@ angular.module('authBoss.auth')
 				$rootScope.$broadcast(AUTH_EVENTS.logoutSuccess);
 				deferred.resolve(null);
 			}, function(err){
-				console.error('Error logging out:', errRes.data);
+				console.error('Error logging out:', err);
 				deferred.reject(err);
 			});
 			return deferred.promise;

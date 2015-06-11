@@ -43,6 +43,7 @@ UserSchema.methods = {
 	},
 	tokenData: function(){
 		var data = _.pick(this.toJSON(), ["email", "role"]);
+		console.log('role:', data.role);
 		data.userId = this.toJSON().id;
 		return data;
 	},

@@ -29,7 +29,7 @@ var User = require('../models/user').User;
  */
 exports.get = function(req, res, next){
 	var isList = true;
-	var query = User.find({});
+	var query = User.find({}).populate({path:'role', select:'name'});
 	if(req.params.id){ //Get data for a specific user
 		console.log('user request with id:', req.params.id);
 		query = User.findById(req.params.id).populate({path:'role', select:'name'});

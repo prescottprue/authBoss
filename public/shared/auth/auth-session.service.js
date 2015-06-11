@@ -4,7 +4,7 @@ angular.module('authBoss.auth')
     return angular.isDefined($sessionStorage.token);
   };
   this.getRole = function(){
-    if(this.role) return this.role; //Not available if refresh has occured
+    if(this.role) return this.role.name; //Not available if refresh has occured
     if(this.exists()){
       return jwtHelper.decodeToken($sessionStorage.token).role;
     } else {

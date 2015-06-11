@@ -19,7 +19,7 @@ var config = require('../config/default').config;
  */
 exports.login = function(req, res, next){
 	console.log('[AuthCtrl.login] Login request with :', req.body);
-	var query = User.findOne({email:req.body.email});
+	var query = User.findOne({email:req.body.email}).populate('role');
 	//TODO:Create a new session
 	query.exec(function (err, result){
 		if(err) { console.error('login error:', err);
@@ -125,7 +125,7 @@ exports.logout = function(req, res, next){
 exports.verify = function(req, res, next){
 	//TODO:Return user info
 	console.log('verify request:', req.user);
-	var query = User.findById(req.user.userId);
+	var query = User.findById(req.user.userId).populate('role');
 	query.exec(function (err, result){
 		console.log('verify returned:', result, err);
 		if (err) { return next(err); }
