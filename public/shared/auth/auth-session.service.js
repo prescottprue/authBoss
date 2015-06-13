@@ -6,6 +6,15 @@ angular.module('authBoss.auth')
   this.getRole = function(){
     if(this.role) return this.role.name; //Not available if refresh has occured
     if(this.exists()){
+      console.log('decoded token:', jwtHelper.decodeToken($sessionStorage.token));
+      return jwtHelper.decodeToken($sessionStorage.token).role.name;
+    } else {
+      return "guest";
+    }
+  };
+  this.getRoleObj = function(){
+    if(this.role) return this.role.name; //Not available if refresh has occured
+    if(this.exists()){
       return jwtHelper.decodeToken($sessionStorage.token).role;
     } else {
       return "guest";

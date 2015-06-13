@@ -21,34 +21,20 @@ exports.login = function(req, res, next){
 	console.log('[AuthCtrl.login] Login request with :', req.body);
 	var query = User.findOne({email:req.body.email}).populate('role');
 	//TODO:Create a new session
-	query.exec(function (err, result){
+	query.exec(function (err, currentUser){
 		if(err) { console.error('login error:', err);
 			return next(err);}
-		if(!result){
+		if(!currentUser){
 			console.error('user not found');
 			return next (new Error('User could not be found'));
 		}
-		var currentUser = result;
-		//Check password against db
 		console.log('[AuthCtrl.login] User found:', currentUser);
-		bcrypt.compare(req.body.password, currentUser.password, function(err, passwordsMatch){
-			console.log("[AuthCtrl.login] Compare returned:", passwordsMatch);
-			if(err){return next(err);}
-			if(!passwordsMatch){
-				return next (new Error('Invalid authentication credentials'));
-			}
-			currentUser.startSession().then(function (session){
-				//Encode a JWT with user info
-				var tokenData = currentUser.tokenData();
-				tokenData.sessionId = session._id;
-				var token = jwt.sign(tokenData, config.jwtSecret);
-				res.send({token:token, user:result.strip()});
-			}, function(err){
-				console.error('error creating session');
-				return next (new Error('Invalid authentication credentials'))
-			});
-
-			//TODO: Add session info to token
+		currentUser.login(req.body.password).then(function(token){
+			console.log('[AuthCtrl.login] Login Successful. Token:', token);
+			res.send({token:token, user:currentUser.strip()});
+		}, function(err){
+			//TODO: Handle wrong password
+			res.status(400).send('Login Error:', err);
 		});
 	});
 };
