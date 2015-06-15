@@ -6,6 +6,7 @@
         <thead>
           <tr>
             <th>Name</th>
+            <th># of accounts</th>
             <th>CreatedAt</th>
             <th>Delete</th>
           </tr>
@@ -13,8 +14,9 @@
         <tbody>
           <tr ng-repeat="role in roles"  ui-sref="role({name:role.name})">
             <td data-title="Name">{{role.name}}</td>
+            <td data-title="Accounts">{{role.accounts.length}}</td>
             <td data-title="CreatedAt">{{role.createdAt}}</td>
-            <td data-title="Delete">      
+            <td data-title="Delete" stop-event>      
               <md-button ng-click="delete($index)"
                  aria-label="Delete"
                  class="md-icon-button" >

@@ -13,8 +13,8 @@
       <tbody>
         <tr ng-repeat="app in applications"  ui-sref="app({name:app.name})">
           <td data-title="Name">{{app.name}}</td>
-          <td data-title="Owner">{{app.owner.email}}</td>
-          <td data-title="Delete">      
+          <td data-title="Owner">{{app.owner.username || "No Owner"}}</td>
+          <td data-title="Delete" stop-event>      
             <md-button ng-click="delete($index)"
                aria-label="Delete"
                class="md-icon-button" >

@@ -7,13 +7,14 @@ var url = require('url');
 var _ = require('underscore');
 
 var Role = require('../models/role').Role;
+
 /** Get Roles list
  * @description Log an existing Role in
  * @params {String} email - Email of Role
  * @params {String} password - Password of Role
  */
 exports.getList = function(req, res, next){
-	var query = Role.find({}).populate({path:"accounts", select:"name"});
+	var query = Role.find({}).populate({path:"accounts", select:"username"});
 	query.exec(function (err, result){
 		if(err) { return next(err);}
 		if(!result){
@@ -31,14 +32,19 @@ exports.get = function(req, res, next){
 	console.log('roles get request:', req.params.name, req.body);
 	if(req.params.name){ //Get data for a specific Role
 		console.log('Role request:', req.params.name);
-		var query = Role.findOne({name:req.params.name}).populate({path:'accounts', select:'name title role'});
+		var query = Role.findOne({name:req.params.name}).populate('accounts');
 	}
 	query.exec(function (err, result){
 		if(err) { return next(err);}
 		if(!result){
 			return next (new Error('Role could not be found'));
 		}
-		res.send(result);
+		var role = result;
+		role.findAccounts().then(function(roleAccounts){
+			res.send(result);
+		}, function(err){
+			res.status(500).send('Error finding accounts for roles');
+		});
 	});
 };
 

@@ -18,7 +18,7 @@
             <td data-title="Name">{{user.name}}</td>
             <td data-title="Email">{{user.email}}</td>
             <td data-title="Role">{{user.role || "No Role"}}</td>
-            <td data-title="Delete">      
+            <td data-title="Delete" stop-event>      
               <md-button ng-click="delete($index)"
                  aria-label="Delete"
                  class="md-icon-button" >

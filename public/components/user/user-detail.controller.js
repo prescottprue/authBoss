@@ -22,6 +22,7 @@ angular.module('authBoss')
 			console.error('User Detail Ctrl: Invalid user id state param');
 			$scope.data.error = 'User Id is required to load user data';
 		}
+
 		$scope.getRoles = function(){
 			return rolesService.get().then(function(rolesList){
 				$scope.rolesList = rolesList;
