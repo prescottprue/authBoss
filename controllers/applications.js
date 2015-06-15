@@ -15,7 +15,7 @@ exports.get = function(req, res, next){
 	var query = Application.find({}).populate({path:'owner', select:'name title email'});
 	if(req.params.name){ //Get data for a specific application
 		console.log('application request with id:', req.params.name);
-		query = Application.findOne({name:req.params.name});
+		query = Application.findOne({name:req.params.name}).populate({path:'owner', select:'name title email'});
 		isList = false;
 	}
 	query.exec(function (err, result){

@@ -2,15 +2,15 @@ angular.module('authBoss')
 .factory('userService', ['$q', '$http', '$rootScope','$sessionStorage', function ($q, $http, $rootScope, $sessionStorage) {
 	var users = null;
 	return {
-		update:function(userId, userData){
+		update:function(username, userData){
 			var deferred = $q.defer();
-			console.log('UserService: Updating user with id: ' + userId, userData);
+			console.log('UserService: Updating user with id: ' + username, userData);
 			var updateData = userData;
 			if(_.has(updateData, "role") && _.isObject(updateData.role)){
 				updateData.role = updateData.role._id; //Just send id
 			}
 			console.log('update with:', updateData);
-			$http.put('/user/'+ userId, updateData)
+			$http.put('/user/'+ username, updateData)
 			.then(function (apiRes){
 				console.log('UserService: User data loaded:', apiRes.data);
 				deferred.resolve(apiRes.data);
@@ -22,13 +22,13 @@ angular.module('authBoss')
 			});
 			return deferred.promise;
 		},
-		get:function(userId){
+		get:function(username){
 			var deferred = $q.defer();
-			// console.log('Loading user with ID:', userId);
+			// console.log('Loading user with ID:', username);
 			var endpointUrl = "/users";
 			var isList = true;
-			if(userId){
-				endpointUrl = endpointUrl + "/" + userId;
+			if(username){
+				endpointUrl = endpointUrl + "/" + username;
 				isList = false;
 			}
 			$http.get(endpointUrl)
@@ -47,11 +47,11 @@ angular.module('authBoss')
 			});
 			return deferred.promise;
 		},
-		del:function(userId){
+		del:function(username){
 			var deferred = $q.defer();
-			// console.log('Loading user with ID:', userId);
-			if(userId){
-				endpointUrl =  "users/" + userId;
+			// console.log('Loading user with ID:', username);
+			if(username){
+				endpointUrl =  "users/" + username;
 			}
 			$http.delete(endpointUrl)
 			.then(function (apiRes){

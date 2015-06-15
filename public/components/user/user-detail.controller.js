@@ -5,15 +5,15 @@ angular.module('authBoss')
 			error:null,
 			editing:false
 		};
-		if($stateParams.id){
+		if($stateParams.username){
 			$scope.data.loading = true;
-			console.log('userId:', $stateParams.id)
-			userService.get($stateParams.id)
+			console.log('userId:', $stateParams.username)
+			userService.get($stateParams.username)
 			.then(function (userData){
 				console.log('User Detail Ctrl: user data loaded:', userData);
 				$scope.user = userData;
 			}).catch(function (err){
-				console.error('User Detail Ctrl: Error loading user with id:' + $stateParams.id, err);
+				console.error('User Detail Ctrl: Error loading user with username:' + $stateParams.username, err);
 				$scope.data.error = err;
 			}).finally(function(){
 				$scope.data.loading = false;
@@ -31,7 +31,7 @@ angular.module('authBoss')
 			$scope.data.editing = false;
 			$scope.data.loading = true;
 			var userData = $scope.user;
-			userService.update($stateParams.id, userData)
+			userService.update($stateParams.username, userData)
 			.then(function (updatedUserData){
 				console.log('User Detail Ctrl: User data loaded:', updatedUserData);
 				// $scope.user = apiRes.data;

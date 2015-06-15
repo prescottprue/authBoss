@@ -19,11 +19,6 @@ module.exports =  {
 	auth:[
 		{
 			type:'POST',
-			endpoint:'/logout',
-			controller: authCtrls.logout
-		},
-		{
-			type:'POST',
 			endpoint:'/signup',
 			controller: authCtrls.signup
 		},
@@ -51,7 +46,7 @@ module.exports =  {
 		},
 		{
 			type:'GET',
-			endpoint: '/users/:id',
+			endpoint: '/users/:username',
 			controller:userCtrls.get
 		},
 		{
@@ -61,12 +56,12 @@ module.exports =  {
 		},
 		{
 			type:'PUT',
-			endpoint: '/user/:id',
+			endpoint: '/user/:username',
 			controller:userCtrls.update
 		},
 		{
 			type:'DELETE',
-			endpoint: '/users/:id',
+			endpoint: '/users/:username',
 			controller:userCtrls['delete']
 		}
 	],

@@ -14,10 +14,7 @@ angular.module('authBoss')
 	// --------------- Auth Session ----------------- //
 	$scope.login = function() {
 		$scope.loginForm.loading = true;
-		AuthService.login({
-			email:$scope.loginForm.email, 
-			password:$scope.loginForm.password
-		})
+		AuthService.login($scope.loginForm)
 		.then(function (authData){
 			console.log('Successful login:', authData);
 			$scope.loginForm.loading = false;

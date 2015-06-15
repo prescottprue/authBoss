@@ -20,8 +20,10 @@ angular.module('authBoss.auth')
 			} else if(Session.exists()){
 				$http.get('/user')
 				.then(function (successRes){
+					console.log('currentUser response:', successRes);
 					if(successRes.status == 401){
 						$rootScope.currentUser = null;
+						Session.destroy();
 						deferred.reject();
 					} else {
 						$rootScope.currentUser = successRes.data;
@@ -40,35 +42,45 @@ angular.module('authBoss.auth')
 		signup:function (signupData){
 			var deferred = $q.defer();
 			console.log('signup called with:', signupData);
+			var self = this;
+			//TODO: Check confirm
 			$http.post('/signup', {
+	      username:signupData.username,
 	      email: signupData.email,
 	      password: signupData.password,
 	      name:signupData.name,
 	      title:signupData.title
 	    })
 	    .then(function (successRes){
-	    	console.log('AuthService: Signup successful:', successRes.data);
-	    	deferred.resolve(successRes.data);
-	    	$rootScope.currentUser = successRes.data;
+	    	$log.log('[AuthService.signup()]: Signup successful:', successRes.data);
+	    	//Login with new user
+	    	$log.log('[AuthService.signup()]: Logging in as new user');
+	    	self.login({username:successRes.data.username, password:signupData.password}).then(function(){
+					$log.info('New user logged in successfully:', err);
+	    		deferred.resolve(successRes.data);
+	    	}, function(err){
+					$log.error('Error Logging in as new user:', err);
+	    		deferred.reject(err);
+	    	})
 	    })
 	    .catch(function (apiResponse) {
 	      console.error('AuthService: Error signing up:', apiResponse);
 	      deferred.reject(apiResponse.data);
-	      // Invalid username / password combination.
-	      // if (sailsResponse.status === 400 || 404) {
-	      // }
+	      // TODO: Handle Invalid username / password combination.
 	    });
 	    return deferred.promise;
 		},
 		login:function (loginData){
 			var deferred = $q.defer();
 			var self = this;
+			$log.log('[AuthService.login()] Login called with:', loginData);
+			//TODO: Login with username or email
 			$http.put('/login', {
-	      email: loginData.email,
+	      username: loginData.username,
 	      password: loginData.password
 	    })
 	    .then(function (successRes){
-	    	console.log('login response:', successRes);
+	    	$log.log('[AuthService.login()] Login response:', successRes);
 	    	Session.create(successRes.data.token);
 	    	$rootScope.currentUser = successRes.data.user;
 	    	$rootScope.$broadcast(AUTH_EVENTS.loginSuccess);
@@ -87,7 +99,7 @@ angular.module('authBoss.auth')
 		logout:function (){
 			console.log('user service: logout called');
 			var deferred = $q.defer();
-			$http.post('/logout').then(function(){
+			$http.put('/logout').then(function(){
 				Session.destroy();
 				$rootScope.currentUser = null;
 				$rootScope.$broadcast(AUTH_EVENTS.logoutSuccess);

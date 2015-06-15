@@ -1,25 +1,17 @@
 angular.module('authBoss.auth')
-.service('Session', ['$sessionStorage', '$rootScope','jwtHelper',  function ($sessionStorage, $rootScope, jwtHelper) {
+.service('Session', ['$log', '$sessionStorage', '$rootScope','jwtHelper',  function ($log, $sessionStorage, $rootScope, jwtHelper) {
   this.exists = function(){
     return angular.isDefined($sessionStorage.token);
   };
   this.getRole = function(){
-    if(this.role) return this.role.name; //Not available if refresh has occured
+    if(this.role) return this.role; //Not available if refresh has occured
     if(this.exists()){
-      console.log('decoded token:', jwtHelper.decodeToken($sessionStorage.token));
-      return jwtHelper.decodeToken($sessionStorage.token).role.name;
-    } else {
-      return "guest";
-    }
-  };
-  this.getRoleObj = function(){
-    if(this.role) return this.role.name; //Not available if refresh has occured
-    if(this.exists()){
+      $log.log('[Session.getRole] decoded token:', jwtHelper.decodeToken($sessionStorage.token));
       return jwtHelper.decodeToken($sessionStorage.token).role;
     } else {
       return "guest";
     }
-  }
+  };
   this.token = function(){
     return angular.isDefined($sessionStorage.token) ? $sessionStorage.token : null;
   };

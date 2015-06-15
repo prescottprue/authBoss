@@ -3,6 +3,11 @@
     <section layout="row" layout-sm="column" layout-align="center center">
       <md-input-container >
         <!-- Use floating label instead of placeholder -->
+        <label>Username</label>
+        <input ng-model="user.username" type="text">
+      </md-input-container>
+      <md-input-container >
+        <!-- Use floating label instead of placeholder -->
         <label>Name</label>
         <input ng-model="user.name" type="text">
       </md-input-container>
@@ -12,15 +17,13 @@
         <input ng-model="user.email" type="email">
       </md-input-container>
         <!-- Use floating placeholder instead of label -->
-
     </section>
     <section layout="column" layout-sm="column">
       <!-- <h4 class="md-title">Role</h4> -->
-        <label>Role</label>
-
+      <label>Role</label>
       <md-select ng-model="user.role" md-on-open="getRoles()" style="min-width: 200px;">
-        <md-select-label>{{ user.role ? user.role.name : 'No Role. Please Select' }}</md-select-label>
-        <md-option ng-value="role" ng-repeat="role in rolesList">{{role.name}}</md-option>
+        <md-select-label>{{ user.role ? user.role : 'No Role. Please Select' }}</md-select-label>
+        <md-option ng-value="role.name" ng-repeat="role in rolesList">{{role.name}}</md-option>
       </md-select>
     </section>
     <section layout="row" layout-sm="column" layout-align="center center">

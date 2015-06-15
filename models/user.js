@@ -14,11 +14,12 @@ var config = require('../config/default').config;
 
 var UserSchema = new mongoose.Schema(
 	{
+		username:{type:String, index:true},
 		name:{type: String, default:''},
 		email:{type: String, default:'', index:true},
 		title:{type: String, default:''},
 		password:{type: String, default:''},
-		role:{type: mongoose.Schema.Types.ObjectId, ref:'Role'},
+		role:{type: String, default:''},
 		sessionId:{type:String},
 		createdAt: { type: Date, default: Date.now, index: true},
 		updatedAt: { type: Date, default: Date.now, index: true}
@@ -30,24 +31,24 @@ var UserSchema = new mongoose.Schema(
 /*
  * Set collection name to 'user'
  */
-UserSchema.set('collection', 'user');
+UserSchema.set('collection', 'users');
 
 
-UserSchema.virtual('id')
-.get(function (){
-	return this._id;
-})
-.set(function (id){
-	return this._id = id;
-});
+// UserSchema.virtual('id')
+// .get(function (){
+// 	return this._id;
+// })
+// .set(function (id){
+// 	return this._id = id;
+// });
 UserSchema.methods = {
 	//Remove values that should not be sent
 	strip: function(){
 		return _.omit(this.toJSON(), ["password", "__v", "_id", '$$hashKey']);
 	},
 	tokenData: function(){
-		var data = _.pick(this.toJSON(), ["email", "role"]);
-		console.log('role:', data.role);
+		var data = _.pick(this.toJSON(), ["username", "role"]);
+		console.log('[User.tokenData()] role:', data.role);
 		data.userId = this.toJSON().id;
 		return data;
 	},
@@ -64,6 +65,7 @@ UserSchema.methods = {
 				//Create Token
 				console.log("[User.login()] Session started:", sessionInfo);
 				var token = self.generateToken(sessionInfo);
+				console.log("[User.login()] Token Generated:", token);
 				d.resolve(token);
 			}, function(err){
 				d.reject(err);
@@ -95,7 +97,6 @@ UserSchema.methods = {
 	//Wrap query in promise
 	saveNew:function(){
 		var d = Q.defer();
-		console.log('this:', this);
 		this.save(function (err, result){
 			if(err) { d.reject(err);}
 			if(!result){
@@ -105,7 +106,6 @@ UserSchema.methods = {
 		});
 		return d.promise;
 	},
-
 	//Create a new session with user information attached
 	startSession: function(){
 		//Create new session
@@ -151,6 +151,44 @@ UserSchema.methods = {
 			deferred.resolve(result);
 		});
 		return deferred.promise;
+	},
+	hashPassword:function(password){
+		var d = Q.defer();
+		console.log('[User.hashPassword()] Hashing password');
+		bcrypt.genSalt(10, function(err, salt) {
+			if(err){
+				console.log('[User.hashPassword()] Error generating salt:', err);
+				d.reject(err);
+			}
+		  bcrypt.hash(password, salt, function(err, hash) {
+				//Add hash to userData
+				if(err){
+					console.log('[User.hashPassword()] Error Hashing password:', err);
+					d.reject(err);
+				}
+				d.resolve(hash);
+			});
+		});
+		return d.promise;
+	},
+	createWithPass:function(password){
+		//TODO: Hash password
+		//Save new user with password
+		var d = Q.defer();
+		var self = this;
+		self.hashPassword(password).then(function (hashedPass){
+			self.password = hashedPass;
+			console.log('[User.createWithPass()] Password hashed successfully');
+			self.saveNew().then(function(newUser){
+				console.log('[User.createWithPass()] New user created:', newUser);
+				d.resolve(newUser);
+			}, function(err){
+				d.reject(err);
+			});
+		}, function(err){
+			d.reject(err);
+		});
+		return d.promise;
 	}
 };
 /*

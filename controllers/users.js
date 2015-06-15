@@ -29,10 +29,10 @@ var User = require('../models/user').User;
  */
 exports.get = function(req, res, next){
 	var isList = true;
-	var query = User.find({}).populate({path:'role', select:'name'});
-	if(req.params.id){ //Get data for a specific user
-		console.log('user request with id:', req.params.id);
-		query = User.findById(req.params.id).populate({path:'role', select:'name'});
+	var query = User.find({});
+	if(_.has(req.params, "username")){ //Get data for a specific user
+		console.log('user request with username:', req.params.username);
+		query = User.findOne({username:req.params.username});
 		isList = false;
 	}
 	w.runQuery(query).then(function(userData){
@@ -50,6 +50,7 @@ exports.get = function(req, res, next){
  * @apiName AddUser
  * @apiGroup User
  *
+ * @apiParam {String} username Username of user
  * @apiParam {String} email Email of user
  * @apiParam {String} password Password of user
  * @apiParam {String} name Name of user
@@ -69,10 +70,21 @@ exports.get = function(req, res, next){
  */
 exports.add = function(req, res, next){
 	//Query for existing user with same _id
-	var query = User.findOne({"email":req.body.email}); // find using email field
-	w.runQuery(query).then(function(addedUser){
+	var query = User.findOne({"username":req.body.username}); // find using username field
+	
+	var query;
+	if(!_.has(req.body, "username") && !_.has(req.body, "email")){
+		res.status(400).json({code:400, message:"Username or Email required to add a new user"});
+	}
+	if(_.has(req.body, "username")){
+		query = User.findOne({"username":req.body.username}); // find using username field
+	} else {
+		query = User.findOne({"email":req.body.email}); // find using email field
+	}
+	w.runQuery(query).then(function(){
 		var user = new User(req.body);
 		user.saveNew().then(function(newUser){
+			//TODO: Set temporary password
 			res.json(newUser);
 		}, function(err){
 			console.error('error creating new user:', err);
@@ -89,7 +101,7 @@ exports.add = function(req, res, next){
  * @apiName UpdateUser
  * @apiGroup User
  *
- * @apiParam {String} email Email of user
+ * @apiParam {String} username Email of user
  * @apiParam {String} password Password of user
  * @apiParam {String} name Name of user
  * @apiParam {String} title Title of user
@@ -107,12 +119,9 @@ exports.add = function(req, res, next){
  *
  */
 exports.update = function(req, res, next){
-	if(req.params.id){
-		User.update({_id:req.params.id}, req.body, {upsert:true}, function (err, numberAffected, result) {
+	if(_.has(req.params, "username")){
+		User.update({username:req.params.username}, req.body, {upsert:false}, function (err, numberAffected, result) {
 			if (err) { return next(err); }
-			// if (!result) {
-			// 	return next(new Error('user could not be added.'));
-			// }
 			//TODO: respond with updated data instead of passing through req.body
 			res.json(req.body);
 		});
@@ -125,7 +134,7 @@ exports.update = function(req, res, next){
  * @apiName DeleteUser
  * @apiGroup User
  *
- * @apiParam {String} email Email of user
+ * @apiParam {String} username Email of user
  *
  * @apiSuccess {Object} userData Object containing deleted users data.
  *
@@ -139,12 +148,15 @@ exports.update = function(req, res, next){
  *
  */
 exports.delete = function(req, res, next){
-	var urlParams = url.parse(req.url, true).query;
-	var query = User.findOneAndRemove({'_id':req.params.id}); // find and delete using id field
-	w.runQuery(query).then(function(){
-		res.json(result);
-	}, function(err){
-		console.error('User could not be deleted:', err);
-		res.status(500).send({message:'User cound not be deleted'});
-	});
+	// var urlParams = url.parse(req.url, true).query;
+	if(_.has(req.params, "username")){
+		var query = User.findOneAndRemove({'username':req.params.username}); // find and delete using id field
+		w.runQuery(query).then(function(result){
+			console.log('User deleted successfully:');
+			res.json(result);
+		}, function(err){
+			console.error('User could not be deleted:', err);
+			res.status(500).send({message:'User cound not be deleted'});
+		});
+	}
 };
