@@ -9,7 +9,7 @@ var w = require('../lib/mongoPromise');
 var User = require('../models/user').User;
 
 /**
- * @api {get} /users Request Users list
+ * @api {get} /users Get Users List
  * @apiName GetUser
  * @apiGroup User
  *
@@ -25,7 +25,6 @@ var User = require('../models/user').User;
  *     	 "role":"admin",
  *     }
  *
- * @apiUse UserNotFoundError
  */
 exports.get = function(req, res, next){
 	var isList = true;

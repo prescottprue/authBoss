@@ -8,13 +8,25 @@ var _ = require('underscore');
 
 var Role = require('../models/role').Role;
 
-/** Get Roles list
- * @description Log an existing Role in
- * @params {String} email - Email of Role
- * @params {String} password - Password of Role
+/**
+ * @api {get} /roles Get roles list
+ * @apiName GetRole
+ * @apiGroup Role
+ *
+ * @apiParam {Number} id Roles unique ID.
+ *
+ * @apiSuccess {Object} roleData Object containing roles data.
+ *
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "name": "App1",
+ *       "owner": {rolename:"Doe"}
+ *     }
+ *
  */
 exports.getList = function(req, res, next){
-	var query = Role.find({}).populate({path:"accounts", select:"username"});
+	var query = Role.find({}).populate({path:"accounts", select:"rolename"});
 	query.exec(function (err, result){
 		if(err) { return next(err);}
 		if(!result){
@@ -23,10 +35,23 @@ exports.getList = function(req, res, next){
 		res.send(result);
 	});
 };
-/** Get Role
- * @description Get a specific role's data based on name
- * @params {String} email - Email of Role
- * @params {String} password - Password of Role
+
+/**
+ * @api {get} /roles Request Roles list
+ * @apiName GetRole
+ * @apiGroup Role
+ *
+ * @apiParam {Number} id Roles unique ID.
+ *
+ * @apiSuccess {Object} roleData Object containing roles data.
+ *
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "name": "App1",
+ *       "owner": {rolename:"Doe"}
+ *     }
+ *
  */
 exports.get = function(req, res, next){
 	console.log('roles get request:', req.params.name, req.body);
@@ -48,10 +73,25 @@ exports.get = function(req, res, next){
 	});
 };
 
-/** Add Role
- * @description Add a new Role
- * @params {String} name - Name of Role 'Required'
- * @params {Array|String} accounts - Array or list of accounts to add to this role
+/**
+ * @api {post} /roles Add a new role
+ * @apiName AddRole
+ * @apiGroup Role
+ *
+ * @apiParam {String} name Name of role
+ * @apiParam {String} title Title of role
+ * @apiParam {Boolean} tempPassword Whether or not to set a temporary password (Also set if there is no password param)
+ *
+ * @apiSuccess {Object} roleData Object containing newly created roles data.
+ *
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "name": "App1",
+ *       "owner": {rolename:"Doe"}
+ *     }
+ *
+ *
  */
 exports.add = function(req, res, next){
 	//Role does not already exist
@@ -77,10 +117,24 @@ exports.add = function(req, res, next){
 		res.status(500).send('Role name required');
 	}
 };
-/** Update Ctrl
- * @description Update a Role
- * @params {String} name - Name of Role
- * @params {Array|String} accounts - Accounts with this role
+
+/**
+ * @api {put} /roles Update a role
+ * @apiName UpdateRole
+ * @apiGroup Role
+ *
+ * @apiParam {String} name Name of role
+ *
+ * @apiSuccess {Object} roleData Object containing updated roles data.
+ *
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "name": "App1",
+ *       "owner": {rolename:"Doe"}
+ *     }
+ *
+ *
  */
 exports.update = function(req, res, next){
 	Role.update({_id:req.id}, req.body, {upsert:true}, function (err, numberAffected, result) {
@@ -91,9 +145,23 @@ exports.update = function(req, res, next){
 		res.json(result);
 	});
 };
-/** Delete Ctrl
- * @description Delete a Role
- * @params {String} email - Email of Role
+
+/**
+ * @api {delete} /role/:id Delete a role
+ * @apiName DeleteRole
+ * @apiGroup Role
+ *
+ * @apiParam {String} id Id of role
+ *
+ * @apiSuccess {Object} roleData Object containing deleted role's data.
+ *
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "name": "user",
+ *       "accounts": [{username:"scott"}]
+ *     }
+ *
  */
 exports.delete = function(req, res, next){
 	var urlParams = url.parse(req.url, true).query;

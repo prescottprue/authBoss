@@ -26,7 +26,8 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-var allowedPaths = ['/', '/login', '/signup'];
+
+var allowedPaths = ['/', '/login', '/signup', '/docs'];
 // var assets = require('./assets');
 // allowedPaths = _.union(allowedPaths, config.vendor, config.app);
 

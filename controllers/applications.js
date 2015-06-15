@@ -1,14 +1,27 @@
+/**
+ * @description Application Controller
+ */
 var Application = require('../models/application').Application;
 var mongoose = require('mongoose');
 var url = require('url');
 var _ = require('underscore');
+
 /**
- * @description Application controller functions
- */
-/** Get Ctrl
- * @description Log an existing application in
- * @params {String} email - Email of application
- * @params {String} password - Password of application
+ * @api {get} /applications Get Applications list
+ * @apiName GetApplication
+ * @apiGroup Application
+ *
+ * @apiParam {String} name Name of Application
+ *
+ * @apiSuccess {Object} applicationData Object containing applications data.
+ *
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "name": "App1",
+ *       "owner": {username:"Doe"}
+ *     }
+ *
  */
 exports.get = function(req, res, next){
 	var isList = true;
@@ -27,10 +40,23 @@ exports.get = function(req, res, next){
 	});
 };
 
-/** Add Ctrl
- * @description Add an application
- * @params {String} name - Name of application
- * @params {String} owner - ID of account that created the application
+/**
+ * @api {post} /applications Add a new application
+ * @apiName AddApplication
+ * @apiGroup Application
+ *
+ * @apiParam {String} name Name of application
+ *
+ * @apiSuccess {Object} applicationData Object containing newly created applications data.
+ *
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "name": "App1",
+ *       "owner": {username:"Doe"}
+ *     }
+ *
+ *
  */
 exports.add = function(req, res, next){
 	//Query for existing application with same _id
@@ -42,7 +68,10 @@ exports.add = function(req, res, next){
 			return next(new Error('Application with this information already exists.'));
 		}
 		//application does not already exist
-		var application = new Application(req.body);
+		//TODO: Only add valid appData
+		var appData = req.body;
+		//TODO: Add user data under owner parameter
+		var application = new Application(appData);
 		Application.save(function (err, result) {
 			if (err) { return next(err); }
 			if (!result) {
@@ -52,10 +81,26 @@ exports.add = function(req, res, next){
 		});
 	});
 };
-/** Update Ctrl
- * @description Update an application
- * @params {String} name - Name of application
- * @params {String} title - Title of application
+
+/**
+ * @api {put} /applications Update a application
+ * @apiName UpdateApplication
+ * @apiGroup Application
+ *
+ * @apiParam {String} name Name of application
+ * @apiParam {Object} owner Owner of application
+ * @apiParam {String} owner.username Application owner's username
+ *
+ * @apiSuccess {Object} applicationData Object containing updated applications data.
+ *
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "name": "App1",
+ *       "owner": {username:"Doe"}
+ *     }
+ *
+ *
  */
 exports.update = function(req, res, next){
 	console.log('app update request with name: ' + req.params.name + ' with body:', req.body);
@@ -69,9 +114,24 @@ exports.update = function(req, res, next){
 		res.status(400).send({message:'Application id required'});
 	}
 };
-/** Delete Ctrl
- * @description Delete an application
- * @params {Route Param} id - Id of application
+
+/**
+ * @api {delete} /application/:id Delete an application
+ * @apiName DeleteApplication
+ * @apiGroup Application
+ *
+ * @apiParam {String} name Name of application
+ *
+ * @apiSuccess {Object} applicationData Object containing deleted applications data.
+ *
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "name": "App1",
+ *       "owner": {username:"Doe"}
+ *     }
+ *
+ *
  */
 exports.delete = function(req, res, next){
 	var urlParams = url.parse(req.url, true).query;

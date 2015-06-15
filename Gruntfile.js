@@ -15,6 +15,15 @@ module.exports = function(grunt){
 				script: 'bin/www',
 				ignore:['node_modules/**']
 			}
+		},
+		apidoc: {
+			app:{
+				src: "controllers",
+	    	dest: "public/docs/",
+	    	options:{
+	    		debug:true
+	    	}
+			}
 		}
 	});
 	require('load-grunt-tasks')(grunt);
